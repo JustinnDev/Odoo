@@ -7,3 +7,7 @@ pip install -r requirements.txt # Para instalar los requirimentos
 python odoo-bin -r mondongoAdmin -w mondongo --addons-path=addons -d odoo #Inicar el sistema 
 
 python odoo-bin -r mondongoAdmin -w mondongo --addons-path=addons -d odoo -i base #Inicar el sistema borrando toda la base de datos
+
+ python odoo-bin --without-demo=all -r mondongoAdmin -w mondongo --addons-path=addons -d odoo_prod  #Para Inicar sin las demostraciones de prueba (solo cuando se esta instalando)
+
+ 
