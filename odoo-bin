@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 
-# set server timezone in UTC before time module imported
-__import__('os').environ['TZ'] = 'UTC'
+# Configurar la zona horaria de Venezuela
+__import__('os').environ['TZ'] = 'America/Caracas'
+
+# Importar el módulo time después de configurar la zona horaria
+import time
+time.tzset()
+
+# Importar Odoo
 import odoo
 
 if __name__ == "__main__":
-    odoo.cli.main()
+    # Evitar datos de demostración y ejecutar Odoo
+    odoo.cli.main(['--without-demo=all'])
