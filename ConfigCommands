@@ -10,3 +10,4 @@ pip install -r requirements.txt # Para instalar los requirimentos
 
  python odoo-bin --without-demo=all -r user -w password --addons-path=addons -d dbname  #Para Inicar sin las demostraciones de prueba (solo cuando se esta instalando)
 
+python odoo-bin scaffold moduleNmae modules
