@@ -37,6 +37,8 @@ limit_memory_hard = {limit_memory_hard}
 limit_time_cpu = 60
 limit_time_real = 120
 max_cron_threads = {max_cron_threads}
+xmlrpc_interface = 0.0.0.0
+netrpc_interface = 0.0.0.0
 """
 
 # Guardar el archivo odoo.conf
