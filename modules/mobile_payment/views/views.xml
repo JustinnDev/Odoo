@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="mobile_payment.list">
+      <field name="name">mobile_payment list</field>
+      <field name="model">mobile_payment.mobile_payment</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="mobile_payment.action_window">
+      <field name="name">mobile_payment window</field>
+      <field name="res_model">mobile_payment.mobile_payment</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="mobile_payment.action_server">
+      <field name="name">mobile_payment server</field>
+      <field name="model_id" ref="model_mobile_payment_mobile_payment"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="mobile_payment" id="mobile_payment.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="mobile_payment.menu_1" parent="mobile_payment.menu_root"/>
+    <menuitem name="Menu 2" id="mobile_payment.menu_2" parent="mobile_payment.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="mobile_payment.menu_1_list" parent="mobile_payment.menu_1"
+              action="mobile_payment.action_window"/>
+    <menuitem name="Server to list" id="mobile_payment" parent="mobile_payment.menu_2"
+              action="mobile_payment.action_server"/>
+-->
+  </data>
+</odoo>

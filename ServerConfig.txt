@@ -1,0 +1,2 @@
+NamecheapIP = v=spf1 include:spf.efwd.registrar-servers.com ~all
+PublicIP = 190.142.88.6
