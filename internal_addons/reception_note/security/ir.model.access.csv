@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reception_note_user,reception.note.user,model_reception_note,base.group_user,1,1,1,0
+access_reception_note_line_user,reception.note.line.user,model_reception_note_line,base.group_user,1,1,1,0
+access_reception_note_summary_user,reception.note.summary.user,model_reception_note_summary,base.group_user,1,1,1,0
+access_reception_note_manager,reception.note.manager,model_reception_note,purchase.group_purchase_manager,1,1,1,1
+access_reception_note_line_manager,reception.note.line.manager,model_reception_note_line,purchase.group_purchase_manager,1,1,1,1
+access_reception_note_summary_manager,reception.note.summary.manager,model_reception_note_summary,purchase.group_purchase_manager,1,1,1,1
