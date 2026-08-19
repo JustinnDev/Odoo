@@ -19,19 +19,19 @@ class ReceptionNoteLine(models.Model):
     )
 
     gross_weight = fields.Float(
-        string='Peso Bruto',
+        string='Bruto',
         required=True,
         digits='Product Unit of Measure'
     )
 
     tare_weight = fields.Float(
-        string='Peso Tara',
+        string='Tara',
         required=True,
         digits='Product Unit of Measure'
     )
 
     net_weight = fields.Float(
-        string='Peso Neto',
+        string='Neto',
         compute='_compute_net_weight',
         store=True,
         digits='Product Unit of Measure'

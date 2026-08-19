@@ -20,7 +20,7 @@ class ReceptionNoteSummary(models.Model):
     )
 
     subtotal_kg = fields.Float(
-        string='Subtotal Kg',
+        string='Subtotal',
         required=True,
         digits='Product Unit of Measure'
     )
@@ -32,14 +32,14 @@ class ReceptionNoteSummary(models.Model):
     )
 
     discount_kg = fields.Float(
-        string='Desc. Kg',
+        string='Desc. ',
         compute='_compute_discount_kg',
         store=True,
         digits='Product Unit of Measure'
     )
 
     total_kg = fields.Float(
-        string='Total Kg',
+        string='Total',
         compute='_compute_total_kg',
         store=True,
         digits='Product Unit of Measure'

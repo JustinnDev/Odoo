@@ -17,8 +17,7 @@ class ReceptionNote(models.Model):
     partner_id = fields.Many2one(
         'res.partner',
         string='Proveedor',
-        required=True,
-        domain=[('supplier_rank', '>', 0)]
+        required=True
     )
 
     supplier_ref = fields.Char(
@@ -30,18 +29,18 @@ class ReceptionNote(models.Model):
         string='Fecha y hora de entrada',
         required=True,
         default=fields.Datetime.now,
-        readonly=True
+        readonly=False
     )
 
     exit_time = fields.Datetime(
         string='Fecha y hora de salida',
-        readonly=True
+        readonly=False
     )
 
     state = fields.Selection([
         ('draft', 'En Proceso'),
-        ('received', 'Recibido'),
-        ('purchase_created', 'Orden de Compra Creada'),
+        ('received', 'Procesado'),
+        ('purchase_created', 'En Inventario'),
         ('facturado', 'Facturado'),
         ('cancel', 'Cancelado'),
     ], string='Estado', default='draft', tracking=True)
@@ -76,8 +75,18 @@ class ReceptionNote(models.Model):
     total_amount = fields.Float(
         string='Total a Pagar',
         compute='_compute_totals',
-        store=True
+        store=True,
+        digits='Product Price' 
     )
+
+    currency_id = fields.Many2one(
+    'res.currency',
+    string='Moneda',
+    default=lambda self: self.env.company.currency_id.id,
+    readonly=True
+    )
+
+    
 
     @api.model
     def create(self, vals):
@@ -150,28 +159,34 @@ class ReceptionNote(models.Model):
         if not self.summary_ids:
             raise UserError(_('Debe generar primero el resumen por material.'))
 
-        # Crear la orden de compra
+        # Crear la orden de compra con la referencia del proveedor
         po_vals = {
             'partner_id': self.partner_id.id,
             'origin': self.name,
-            'partner_ref':self.supplier_ref,
+            'partner_ref': self.supplier_ref,
             'date_order': fields.Datetime.now(),
         }
         purchase_order = self.env['purchase.order'].create(po_vals)
 
-        # Crear líneas de la orden de compra
+        # Crear líneas de la orden de compra (solo cantidades positivas)
         po_lines = []
         for summary in self.summary_ids:
-            if summary.total_kg <= 0:
-                continue
-            po_lines.append((0, 0, {
-                'product_id': summary.product_id.id,
-                'product_qty': summary.total_kg,
-                'price_unit': summary.price_unit,
-                'name': summary.product_id.display_name,
-            }))
-        if po_lines:
-            purchase_order.write({'order_line': po_lines})
+            # Solo incluir líneas con cantidad positiva
+            if summary.total_kg > 0:
+                po_lines.append((0, 0, {
+                    'product_id': summary.product_id.id,
+                    'product_qty': summary.total_kg,
+                    'price_unit': summary.price_unit,
+                    'name': summary.product_id.display_name,
+                }))
+            elif summary.total_kg < 0:
+                # Opcional: mostrar una advertencia sobre líneas negativas
+                print(f"Advertencia: {summary.product_id.display_name} tiene cantidad negativa ({summary.total_kg} kg) y no se incluirá en la orden de compra.")
+        
+        if not po_lines:
+            raise UserError(_('No hay líneas con cantidad positiva para generar la orden de compra.'))
+        
+        purchase_order.write({'order_line': po_lines})
 
         # Vincular y actualizar estado
         self.write({
