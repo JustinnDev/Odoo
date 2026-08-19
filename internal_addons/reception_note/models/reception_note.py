@@ -40,8 +40,7 @@ class ReceptionNote(models.Model):
     state = fields.Selection([
         ('draft', 'En Proceso'),
         ('received', 'Procesado'),
-        ('purchase_created', 'En Inventario'),
-        ('facturado', 'Facturado'),
+        ('purchase_created', 'Confirmado'),
         ('cancel', 'Cancelado'),
     ], string='Estado', default='draft', tracking=True)
 
@@ -86,8 +85,12 @@ class ReceptionNote(models.Model):
     readonly=True
     )
 
+    line_count = fields.Integer(
+    string='Total Pesadas',
+    compute='_compute_line_count',
+    store=True
+    )
     
-
     @api.model
     def create(self, vals):
         if vals.get('name', _('Nuevo')) == _('Nuevo'):
@@ -99,6 +102,11 @@ class ReceptionNote(models.Model):
         for note in self:
             note.total_kg = sum(line.total_kg for line in note.summary_ids)
             note.total_amount = sum(line.amount for line in note.summary_ids)
+
+    @api.depends('line_ids')
+    def _compute_line_count(self):
+        for note in self:
+            note.line_count = len(note.line_ids)
 
     def action_compute_summary(self):
         """Agrupa las líneas de pesaje por producto y genera las líneas de resumen."""
@@ -154,7 +162,16 @@ class ReceptionNote(models.Model):
     def action_generate_purchase_order(self):
         """Genera una orden de compra (RFQ) a partir del resumen."""
         self.ensure_one()
-        if self.state not in ['draft', 'received']:
+
+        # Verificar si ya existe una orden de compra
+        if self.purchase_order_id:
+            raise UserError(_('Ya se ha generado una orden de compra para esta nota de recepción.'))
+
+        # Verificar si el usuario tiene permisos para generar órdenes de compra
+        if not self.env.user.has_group('reception_note.group_generate_purchase_order'):
+            raise UserError(_('No tiene permisos para generar órdenes de compra.'))
+
+        if self.state not in ['draft', 'received','facturado']:
             raise UserError(_('Solo se puede generar la orden de compra en estado En Proceso o Recibido.'))
         if not self.summary_ids:
             raise UserError(_('Debe generar primero el resumen por material.'))
@@ -214,10 +231,15 @@ class ReceptionNote(models.Model):
             'exit_time': fields.Datetime.now(),
         })
 
-    def action_set_facturado(self):
-        """Marca la nota como facturada (manual o automáticamente)."""
+    def action_set_draft(self):
+        """Vuelve a poner la nota en estado En Proceso."""
         self.ensure_one()
-        self.write({'state': 'facturado'})
+        if self.state not in ['received', 'cancel']:
+            raise UserError(_('Solo se puede volver a En Proceso desde Recibido o Cancelado.'))
+        self.write({
+            'state': 'draft',
+            'exit_time': False,
+        })
 
     def action_cancel(self):
         self.ensure_one()

@@ -31,7 +31,7 @@
         </field>
     </record>
 
-        <!-- Vista kanban para líneas de pesaje (mejor para móvil) -->
+    <!-- Vista kanban para líneas de pesaje (mejor para móvil) -->
     <record id="view_reception_note_line_kanban" model="ir.ui.view">
         <field name="name">reception.note.line.kanban</field>
         <field name="model">reception.note.line</field>
@@ -89,9 +89,9 @@
                 <field name="product_id"/>
                 <field name="subtotal_kg"/>
                 <field name="discount_percent"/>
-                <field name="discount_kg" readonly="1"/>
+                <field name="discount_kg" readonly="1" optional="hide"/>
                 <field name="total_kg" readonly="1"/>
-                <field name="price_unit"/>
+                <field name="price_unit" optional="hide"/>
                 <field name="amount" readonly="1"/>
             </list>
         </field>
@@ -116,7 +116,7 @@
         </field>
     </record>
 
-     <!-- Vista kanban para resumen (mejor para móvil) -->
+    <!-- Vista kanban para resumen (mejor para móvil) -->
     <record id="view_reception_note_summary_kanban" model="ir.ui.view">
         <field name="name">reception.note.summary.kanban</field>
         <field name="model">reception.note.summary</field>
@@ -184,18 +184,18 @@
                     <button name="action_set_received" type="object"
                             string="Marcar Recibido" class="btn-secondary"
                             invisible="state != 'draft'"/>
+                    <button name="action_set_draft" type="object"
+                            string="Volver a En Proceso" class="btn-secondary"
+                            invisible="state != 'received'"/>
                     <button name="action_generate_purchase_order" type="object"
-                            string="Generar Orden de Compra" class="btn-primary"
-                            invisible="state not in ['received', 'draft']"/>
-                    <button name="action_set_facturado" type="object"
-                            string="Marcar Facturado" class="btn-secondary"
-                            invisible="state not in ['purchase_created', 'received']"/>
+                            string="Confirmar Compra" class="btn-primary"
+                            groups="reception_note.group_generate_purchase_order"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['draft', 'received']"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="draft,received,purchase_created,facturado"
-                           statusbar_colors='{"draft": "blue", "received": "warning", "purchase_created": "success", "facturado": "success", "cancel": "danger"}'/>
+                        statusbar_visible="draft,received,purchase_created"
+                        statusbar_colors='{"draft": "blue", "received": "warning", "purchase_created": "success", "facturado" :"success", "cancel": "danger"}'/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -205,34 +205,41 @@
                     </div>
                     <group>
                         <group>
-                            <field name="partner_id" options="{'no_create': True}"/>
-                            <field name="supplier_ref"/>
+                            <field name="partner_id" options="{'no_create': True}"
+                                   readonly="state == 'purchase_created'"/>
+                            <field name="supplier_ref"
+                                   readonly="state == 'purchase_created'"/>
                             <field name="entry_time"/>
                             <field name="exit_time"/>
                         </group>
                         <group>
                             <field name="purchase_order_id" readonly="1"/>
+                            <field name="line_count" readonly="1"/>
                             <field name="total_kg" readonly="1"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="total_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="total_amount" readonly="1" widget="monetary"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Pesajes">
                             <field name="line_ids"
-                                   mode="list,form"
+                                   mode="list,form,kanban"
                                    tree_view_id="view_reception_note_line_tree"
-                                   form_view_id="view_reception_note_line_form"/>
+                                   form_view_id="view_reception_note_line_form"
+                                   kanban_view_id="view_reception_note_line_kanban"
+                                   readonly="state == 'purchase_created'"/>
                         </page>
                         <page string="Resumen">
                             <field name="summary_ids"
-                                   mode="list,form"
+                                   mode="list,form,kanban"
                                    tree_view_id="view_reception_note_summary_tree"
-                                   form_view_id="view_reception_note_summary_form"/>
+                                   form_view_id="view_reception_note_summary_form"
+                                   kanban_view_id="view_reception_note_summary_kanban"
+                                   readonly="state == 'purchase_created'"/>
                         </page>
                         <page string="Notas Internas">
-                            <field name="note" placeholder="Agregue notas..."/>
+                            <field name="note" placeholder="Agregue notas..."
+                                   readonly="state == 'purchase_created'"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -248,17 +255,16 @@
             <list decoration-info="state == 'draft'"
                   decoration-warning="state == 'received'"
                   decoration-success="state == 'purchase_created'"
-                  decoration-muted="state == 'facturado'"
                   decoration-danger="state == 'cancel'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="supplier_ref"/>
+                <field name="line_count" string="Pesajes"/>
                 <field name="entry_time"/>
                 <field name="exit_time"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" 
                        decoration-warning="state == 'received'" 
                        decoration-success="state == 'purchase_created'"
-                       decoration-muted="state == 'facturado'"
                        decoration-danger="state == 'cancel'"/>
                 <field name="total_kg" sum="Total Kg"/>
                 <field name="total_amount" sum="Total a Pagar"/>
