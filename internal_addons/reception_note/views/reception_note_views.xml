@@ -31,6 +31,54 @@
         </field>
     </record>
 
+        <!-- Vista kanban para líneas de pesaje (mejor para móvil) -->
+    <record id="view_reception_note_line_kanban" model="ir.ui.view">
+        <field name="name">reception.note.line.kanban</field>
+        <field name="model">reception.note.line</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="product_id"/>
+                <field name="gross_weight"/>
+                <field name="tare_weight"/>
+                <field name="net_weight"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>
+                                        <t t-esc="record.product_id.value"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <span class="badge text-bg-primary">
+                                        <t t-esc="record.net_weight.value"/> kg
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mt8">
+                                <div class="col-6">
+                                    <small class="text-muted">Bruto:</small>
+                                    <span><t t-esc="record.gross_weight.value"/></span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-muted">Tara:</small>
+                                    <span><t t-esc="record.tare_weight.value"/></span>
+                                </div>
+                            </div>
+                            <div class="row mt4">
+                                <div class="col-12">
+                                    <small class="text-muted">Neto:</small>
+                                    <strong><t t-esc="record.net_weight.value"/> kg</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- ============ VISTAS PARA EL RESUMEN POR MATERIAL ============ -->
     <!-- Vista lista (tree) del resumen -->
     <record id="view_reception_note_summary_tree" model="ir.ui.view">
@@ -65,6 +113,61 @@
                     <field name="amount" readonly="1"/>
                 </group>
             </form>
+        </field>
+    </record>
+
+     <!-- Vista kanban para resumen (mejor para móvil) -->
+    <record id="view_reception_note_summary_kanban" model="ir.ui.view">
+        <field name="name">reception.note.summary.kanban</field>
+        <field name="model">reception.note.summary</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="product_id"/>
+                <field name="subtotal_kg"/>
+                <field name="discount_percent"/>
+                <field name="discount_kg"/>
+                <field name="total_kg"/>
+                <field name="price_unit"/>
+                <field name="amount"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>
+                                        <t t-esc="record.product_id.value"/>
+                                    </strong>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <span class="badge text-bg-success">
+                                        <t t-esc="record.total_kg.value"/> kg
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mt8">
+                                <div class="col-6">
+                                    <small class="text-muted">Subtotal:</small>
+                                    <span><t t-esc="record.subtotal_kg.value"/> kg</span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-muted">Desc:</small>
+                                    <span><t t-esc="record.discount_percent.value"/>%</span>
+                                </div>
+                            </div>
+                            <div class="row mt4">
+                                <div class="col-6">
+                                    <small class="text-muted">Precio:</small>
+                                    <span>$<t t-esc="record.price_unit.value"/></span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-muted">Importe:</small>
+                                    <strong>$<t t-esc="record.amount.value"/></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 

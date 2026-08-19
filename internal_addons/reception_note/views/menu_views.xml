@@ -4,11 +4,6 @@
     <menuitem id="menu_reception_note_root"
               name="Recepciones"
               parent="purchase.menu_purchase_root"
-              sequence="20"/>
-
-    <menuitem id="menu_reception_note"
-              name="Notas de Recepción"
-              parent="menu_reception_note_root"
               action="action_reception_note"
-              sequence="10"/>
+              sequence="20"/>
 </odoo>
