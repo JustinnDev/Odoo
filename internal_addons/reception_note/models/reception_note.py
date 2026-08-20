@@ -205,6 +205,8 @@ class ReceptionNote(models.Model):
         
         purchase_order.write({'order_line': po_lines})
 
+        purchase_order.button_confirm()
+
         # Vincular y actualizar estado
         self.write({
             'purchase_order_id': purchase_order.id,
