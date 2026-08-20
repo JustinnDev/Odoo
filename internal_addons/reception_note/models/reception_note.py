@@ -90,6 +90,13 @@ class ReceptionNote(models.Model):
     compute='_compute_line_count',
     store=True
     )
+
+    stock_picking_id = fields.Many2one(
+    'stock.picking',
+    string='Movimiento de Inventario',
+    readonly=True,
+    copy=False
+)
     
     @api.model
     def create(self, vals):
@@ -160,7 +167,7 @@ class ReceptionNote(models.Model):
         }
     
     def action_generate_purchase_order(self):
-        """Genera una orden de compra (RFQ) a partir del resumen."""
+        """Genera una orden de compra (RFQ) a partir del resumen. Y tambien validacion de movimiento en el inventario"""
         self.ensure_one()
 
         # Verificar si ya existe una orden de compra
@@ -205,14 +212,41 @@ class ReceptionNote(models.Model):
         
         purchase_order.write({'order_line': po_lines})
 
+         # Confirmar automáticamente la orden de compra
         purchase_order.button_confirm()
-
-        # Vincular y actualizar estado
-        self.write({
-            'purchase_order_id': purchase_order.id,
-            'state': 'purchase_created',
-            'exit_time': fields.Datetime.now(),
-        })
+        
+        # Buscar el picking (recepción) generado por la orden de compra
+        picking = self.env['stock.picking'].search([
+            ('purchase_id', '=', purchase_order.id),
+            ('state', 'not in', ['done', 'cancel'])
+        ], limit=1)
+        
+        if picking:
+            # Validar la recepción de inventario
+            for move in picking.move_ids:
+                if move.state != 'done':
+                    if move.move_line_ids:
+                        # Actualizar líneas existentes
+                        for move_line in move.move_line_ids:
+                            # En Odoo 18, se usa 'quantity' para la cantidad recibida
+                            move_line.quantity = move.product_uom_qty
+                    else:
+                        # Crear línea si no existe
+                        move.move_line_ids = [(0, 0, {
+                            'product_id': move.product_id.id,
+                            'quantity': move.product_uom_qty,
+                            'location_id': move.location_id.id,
+                            'location_dest_id': move.location_dest_id.id,
+                        })]
+            
+            picking.button_validate()
+            
+            self.write({
+                'purchase_order_id': purchase_order.id,
+                'stock_picking_id': picking.id,
+                'state': 'purchase_created',
+                'exit_time': fields.Datetime.now(),
+            })
 
         # Abrir la orden de compra creada
         return {

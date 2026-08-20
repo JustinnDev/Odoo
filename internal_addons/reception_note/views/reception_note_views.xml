@@ -188,14 +188,14 @@
                             string="Volver a En Proceso" class="btn-secondary"
                             invisible="state != 'received'"/>
                     <button name="action_generate_purchase_order" type="object"
-                            string="Confirmar Compra" class="btn-primary"
+                            string="Generar Orden de Compra" class="btn-primary"
                             groups="reception_note.group_generate_purchase_order"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['draft', 'received']"/>
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,received,purchase_created"
-                        statusbar_colors='{"draft": "blue", "received": "warning", "purchase_created": "success", "facturado" :"success", "cancel": "danger"}'/>
+                        statusbar_colors='{"draft": "blue", "received": "warning", "purchase_created": "success", "cancel": "danger"}'/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -214,6 +214,7 @@
                         </group>
                         <group>
                             <field name="purchase_order_id" readonly="1"/>
+                            <field name="stock_picking_id" readonly="1"/>
                             <field name="line_count" readonly="1"/>
                             <field name="total_kg" readonly="1"/>
                             <field name="total_amount" readonly="1" widget="monetary"/>
@@ -259,12 +260,11 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="supplier_ref"/>
-                <field name="line_count" string="Pesajes"/>
                 <field name="entry_time"/>
                 <field name="exit_time"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" 
                        decoration-warning="state == 'received'" 
-                       decoration-success="state == 'purchase_created'"
+                       decoration-success="state == 'purchase_created' or state == 'facturado'"
                        decoration-danger="state == 'cancel'"/>
                 <field name="total_kg" sum="Total Kg"/>
                 <field name="total_amount" sum="Total a Pagar"/>
