@@ -47,3 +47,21 @@ class DispatchNoteLine(models.Model):
     def _compute_net_weight(self):
         for line in self:
             line.net_weight = line.gross_weight - line.tare_weight
+
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        # Forzar guardado del padre después de crear líneas
+        for line in lines:
+            if line.note_id:
+                line.note_id.write({})
+        return lines
+
+    def write(self, vals):
+        result = super().write(vals)
+        # Forzar guardado del padre después de modificar líneas
+        for line in self:
+            if line.note_id:
+                line.note_id.write({})
+        return result

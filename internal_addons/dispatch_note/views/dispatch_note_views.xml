@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- ============ VISTAS PARA LAS LÍNEAS DE PESAJE ============ -->
-    <!-- Vista lista (tree) de líneas de pesaje -->
+    <!-- Vista lista (tree) de líneas de pesaje - Editable directamente -->
     <record id="view_dispatch_note_line_tree" model="ir.ui.view">
         <field name="name">dispatch.note.line.tree</field>
         <field name="model">dispatch.note.line</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="product_id"/>
+                <field name="product_id" required="1"/>
                 <field name="type"/>
-                <field name="gross_weight"/>
-                <field name="tare_weight"/>
+                <field name="gross_weight" required="1"/>
+                <field name="tare_weight" required="1"/>
                 <field name="net_weight" readonly="1"/>
             </list>
         </field>
     </record>
 
-    <!-- Vista formulario de líneas de pesaje -->
+    <!-- Vista formulario de líneas de pesaje (solo para edición avanzada) -->
     <record id="view_dispatch_note_line_form" model="ir.ui.view">
         <field name="name">dispatch.note.line.form</field>
         <field name="model">dispatch.note.line</field>
@@ -34,25 +34,25 @@
     </record>
 
     <!-- ============ VISTAS PARA EL RESUMEN POR MATERIAL ============ -->
-    <!-- Vista lista (tree) del resumen -->
+    <!-- Vista lista (tree) del resumen - Editable directamente -->
     <record id="view_dispatch_note_summary_tree" model="ir.ui.view">
         <field name="name">dispatch.note.summary.tree</field>
         <field name="model">dispatch.note.summary</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="product_id"/>
+                <field name="product_id" required="1"/>
                 <field name="type"/>
-                <field name="subtotal_kg"/>
+                <field name="subtotal_kg" required="1"/>
                 <field name="discount_percent"/>
                 <field name="discount_kg" readonly="1"/>
                 <field name="total_kg" readonly="1"/>
-                <field name="price_unit"/>
+                <field name="price_unit" required="1"/>
                 <field name="amount" readonly="1"/>
             </list>
         </field>
     </record>
 
-    <!-- Vista formulario del resumen -->
+    <!-- Vista formulario del resumen (solo para edición avanzada) -->
     <record id="view_dispatch_note_summary_form" model="ir.ui.view">
         <field name="name">dispatch.note.summary.form</field>
         <field name="model">dispatch.note.summary</field>
@@ -125,17 +125,36 @@
                     <notebook>
                         <page string="Pesajes">
                             <field name="line_ids"
-                                   mode="list,form"
+                                   mode="list"
                                    tree_view_id="view_dispatch_note_line_tree"
                                    form_view_id="view_dispatch_note_line_form"
-                                   readonly="state == 'sale_created'"/>
+                                   readonly="state == 'sale_created'">
+                                <list editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="type"/>
+                                    <field name="gross_weight" required="1"/>
+                                    <field name="tare_weight" required="1"/>
+                                    <field name="net_weight" readonly="1"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Resumen">
                             <field name="summary_ids"
-                                   mode="list,form"
+                                   mode="list"
                                    tree_view_id="view_dispatch_note_summary_tree"
                                    form_view_id="view_dispatch_note_summary_form"
-                                   readonly="state == 'sale_created'"/>
+                                   readonly="state == 'sale_created'">
+                                <list editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="type"/>
+                                    <field name="subtotal_kg" required="1"/>
+                                    <field name="discount_percent"/>
+                                    <field name="discount_kg" readonly="1"/>
+                                    <field name="total_kg" readonly="1"/>
+                                    <field name="price_unit" required="1"/>
+                                    <field name="amount" readonly="1"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Vehículo y Chofer">
                             <group>

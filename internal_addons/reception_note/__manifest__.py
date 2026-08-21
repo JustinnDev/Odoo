@@ -17,7 +17,9 @@
         'views/reception_note_views.xml',
         'views/menu_views.xml',
     ],
+    
     'installable': True,
     'application': True,
     'auto_install': False,
+    
 }

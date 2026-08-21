@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- ============ VISTAS PARA LAS LÍNEAS DE PESAJE ============ -->
-    <!-- Vista lista (tree) de líneas de pesaje -->
+    <!-- Vista lista (tree) de líneas de pesaje - Editable directamente -->
     <record id="view_reception_note_line_tree" model="ir.ui.view">
         <field name="name">reception.note.line.tree</field>
         <field name="model">reception.note.line</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="product_id"/>
-                <field name="gross_weight"/>
-                <field name="tare_weight"/>
+                <field name="product_id" required="1"/>
+                <field name="gross_weight" required="1"/>
+                <field name="tare_weight" required="1"/>
                 <field name="net_weight" readonly="1"/>
             </list>
         </field>
     </record>
 
-    <!-- Vista formulario de líneas de pesaje -->
+    <!-- Vista formulario de líneas de pesaje (solo para edición avanzada) -->
     <record id="view_reception_note_line_form" model="ir.ui.view">
         <field name="name">reception.note.line.form</field>
         <field name="model">reception.note.line</field>
@@ -31,73 +31,25 @@
         </field>
     </record>
 
-    <!-- Vista kanban para líneas de pesaje (mejor para móvil) -->
-    <record id="view_reception_note_line_kanban" model="ir.ui.view">
-        <field name="name">reception.note.line.kanban</field>
-        <field name="model">reception.note.line</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
-                <field name="product_id"/>
-                <field name="gross_weight"/>
-                <field name="tare_weight"/>
-                <field name="net_weight"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="row">
-                                <div class="col-8">
-                                    <strong>
-                                        <t t-esc="record.product_id.value"/>
-                                    </strong>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <span class="badge text-bg-primary">
-                                        <t t-esc="record.net_weight.value"/> kg
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row mt8">
-                                <div class="col-6">
-                                    <small class="text-muted">Bruto:</small>
-                                    <span><t t-esc="record.gross_weight.value"/></span>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <small class="text-muted">Tara:</small>
-                                    <span><t t-esc="record.tare_weight.value"/></span>
-                                </div>
-                            </div>
-                            <div class="row mt4">
-                                <div class="col-12">
-                                    <small class="text-muted">Neto:</small>
-                                    <strong><t t-esc="record.net_weight.value"/> kg</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
     <!-- ============ VISTAS PARA EL RESUMEN POR MATERIAL ============ -->
-    <!-- Vista lista (tree) del resumen -->
+    <!-- Vista lista (tree) del resumen - Editable directamente -->
     <record id="view_reception_note_summary_tree" model="ir.ui.view">
         <field name="name">reception.note.summary.tree</field>
         <field name="model">reception.note.summary</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="product_id"/>
-                <field name="subtotal_kg"/>
+                <field name="product_id" required="1"/>
+                <field name="subtotal_kg" required="1"/>
                 <field name="discount_percent"/>
-                <field name="discount_kg" readonly="1" optional="hide"/>
+                <field name="discount_kg" readonly="1"/>
                 <field name="total_kg" readonly="1"/>
-                <field name="price_unit" optional="hide"/>
+                <field name="price_unit" required="1"/>
                 <field name="amount" readonly="1"/>
             </list>
         </field>
     </record>
 
-    <!-- Vista formulario del resumen -->
+    <!-- Vista formulario del resumen (solo para edición avanzada) -->
     <record id="view_reception_note_summary_form" model="ir.ui.view">
         <field name="name">reception.note.summary.form</field>
         <field name="model">reception.note.summary</field>
@@ -113,61 +65,6 @@
                     <field name="amount" readonly="1"/>
                 </group>
             </form>
-        </field>
-    </record>
-
-    <!-- Vista kanban para resumen (mejor para móvil) -->
-    <record id="view_reception_note_summary_kanban" model="ir.ui.view">
-        <field name="name">reception.note.summary.kanban</field>
-        <field name="model">reception.note.summary</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
-                <field name="product_id"/>
-                <field name="subtotal_kg"/>
-                <field name="discount_percent"/>
-                <field name="discount_kg"/>
-                <field name="total_kg"/>
-                <field name="price_unit"/>
-                <field name="amount"/>
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="row">
-                                <div class="col-8">
-                                    <strong>
-                                        <t t-esc="record.product_id.value"/>
-                                    </strong>
-                                </div>
-                                <div class="col-4 text-end">
-                                    <span class="badge text-bg-success">
-                                        <t t-esc="record.total_kg.value"/> kg
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row mt8">
-                                <div class="col-6">
-                                    <small class="text-muted">Subtotal:</small>
-                                    <span><t t-esc="record.subtotal_kg.value"/> kg</span>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <small class="text-muted">Desc:</small>
-                                    <span><t t-esc="record.discount_percent.value"/>%</span>
-                                </div>
-                            </div>
-                            <div class="row mt4">
-                                <div class="col-6">
-                                    <small class="text-muted">Precio:</small>
-                                    <span>$<t t-esc="record.price_unit.value"/></span>
-                                </div>
-                                <div class="col-6 text-end">
-                                    <small class="text-muted">Importe:</small>
-                                    <strong>$<t t-esc="record.amount.value"/></strong>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
         </field>
     </record>
 
@@ -224,19 +121,34 @@
                     <notebook>
                         <page string="Pesajes">
                             <field name="line_ids"
-                                   mode="list,form,kanban"
+                                   mode="list"
                                    tree_view_id="view_reception_note_line_tree"
                                    form_view_id="view_reception_note_line_form"
-                                   kanban_view_id="view_reception_note_line_kanban"
-                                   readonly="state == 'purchase_created'"/>
+                                   readonly="state == 'purchase_created'">
+                                <list editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="gross_weight" required="1"/>
+                                    <field name="tare_weight" required="1"/>
+                                    <field name="net_weight" readonly="1"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Resumen">
                             <field name="summary_ids"
-                                   mode="list,form,kanban"
+                                   mode="list"
                                    tree_view_id="view_reception_note_summary_tree"
                                    form_view_id="view_reception_note_summary_form"
-                                   kanban_view_id="view_reception_note_summary_kanban"
-                                   readonly="state == 'purchase_created'"/>
+                                   readonly="state == 'purchase_created'">
+                                <list editable="bottom">
+                                    <field name="product_id" required="1"/>
+                                    <field name="subtotal_kg" required="1"/>
+                                    <field name="discount_percent"/>
+                                    <field name="discount_kg" readonly="1"/>
+                                    <field name="total_kg" readonly="1"/>
+                                    <field name="price_unit" required="1"/>
+                                    <field name="amount" readonly="1"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Notas Internas">
                             <field name="note" placeholder="Agregue notas..."
