@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dispatch_note_user,dispatch.note.user,model_dispatch_note,base.group_user,1,1,1,0
+access_dispatch_note_line_user,dispatch.note.line.user,model_dispatch_note_line,base.group_user,1,1,1,0
+access_dispatch_note_summary_user,dispatch.note.summary.user,model_dispatch_note_summary,base.group_user,1,1,1,0
+access_dispatch_note_manager,dispatch.note.manager,model_dispatch_note,sales_team.group_sale_manager,1,1,1,1
+access_dispatch_note_line_manager,dispatch.note.line.manager,model_dispatch_note_line,sales_team.group_sale_manager,1,1,1,1
+access_dispatch_note_summary_manager,dispatch.note.summary.manager,model_dispatch_note_summary,sales_team.group_sale_manager,1,1,1,1

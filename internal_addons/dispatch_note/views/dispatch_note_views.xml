@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ VISTAS PARA LAS LÍNEAS DE PESAJE ============ -->
+    <!-- Vista lista (tree) de líneas de pesaje -->
+    <record id="view_dispatch_note_line_tree" model="ir.ui.view">
+        <field name="name">dispatch.note.line.tree</field>
+        <field name="model">dispatch.note.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="product_id"/>
+                <field name="type"/>
+                <field name="gross_weight"/>
+                <field name="tare_weight"/>
+                <field name="net_weight" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario de líneas de pesaje -->
+    <record id="view_dispatch_note_line_form" model="ir.ui.view">
+        <field name="name">dispatch.note.line.form</field>
+        <field name="model">dispatch.note.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="product_id"/>
+                    <field name="type"/>
+                    <field name="gross_weight"/>
+                    <field name="tare_weight"/>
+                    <field name="net_weight" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ VISTAS PARA EL RESUMEN POR MATERIAL ============ -->
+    <!-- Vista lista (tree) del resumen -->
+    <record id="view_dispatch_note_summary_tree" model="ir.ui.view">
+        <field name="name">dispatch.note.summary.tree</field>
+        <field name="model">dispatch.note.summary</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="product_id"/>
+                <field name="type"/>
+                <field name="subtotal_kg"/>
+                <field name="discount_percent"/>
+                <field name="discount_kg" readonly="1"/>
+                <field name="total_kg" readonly="1"/>
+                <field name="price_unit"/>
+                <field name="amount" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario del resumen -->
+    <record id="view_dispatch_note_summary_form" model="ir.ui.view">
+        <field name="name">dispatch.note.summary.form</field>
+        <field name="model">dispatch.note.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="product_id"/>
+                    <field name="type"/>
+                    <field name="subtotal_kg"/>
+                    <field name="discount_percent"/>
+                    <field name="discount_kg" readonly="1"/>
+                    <field name="total_kg" readonly="1"/>
+                    <field name="price_unit"/>
+                    <field name="amount" readonly="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ VISTA PRINCIPAL (FORMULARIO) ============ -->
+    <record id="view_dispatch_note_form" model="ir.ui.view">
+        <field name="name">dispatch.note.form</field>
+        <field name="model">dispatch.note</field>
+        <field name="arch" type="xml">
+            <form string="Nota de Despacho">
+                <header>
+                    <button name="action_compute_summary" type="object"
+                            string="Calcular Resumen" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_set_processed" type="object"
+                            string="Marcar Procesado" class="btn-secondary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_set_draft" type="object"
+                            string="Volver a En Proceso" class="btn-secondary"
+                            invisible="state != 'processed'"/>
+                    <button name="action_generate_sale_order" type="object"
+                            string="Generar Orden de Venta" class="btn-primary"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancelar" class="btn-secondary"
+                            invisible="state not in ['draft', 'processed']"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,processed,sale_created"
+                        statusbar_colors='{"draft": "blue", "processed": "warning", "sale_created": "success", "cancel": "danger"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <!-- Grupo principal -->
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_create': True}"
+                                   readonly="state == 'sale_created'"/>
+                            <field name="customer_ref"
+                                   readonly="state == 'sale_created'"/>
+                            <field name="entry_time"/>
+                            <field name="exit_time"/>
+                        </group>
+                        <group>
+                            <field name="sale_order_id" readonly="1"/>
+                            <field name="line_count" readonly="1"/>
+                            <field name="total_kg" readonly="1"/>
+                            <field name="total_amount" readonly="1" widget="monetary"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Pesajes">
+                            <field name="line_ids"
+                                   mode="list,form"
+                                   tree_view_id="view_dispatch_note_line_tree"
+                                   form_view_id="view_dispatch_note_line_form"
+                                   readonly="state == 'sale_created'"/>
+                        </page>
+                        <page string="Resumen">
+                            <field name="summary_ids"
+                                   mode="list,form"
+                                   tree_view_id="view_dispatch_note_summary_tree"
+                                   form_view_id="view_dispatch_note_summary_form"
+                                   readonly="state == 'sale_created'"/>
+                        </page>
+                        <page string="Vehículo y Chofer">
+                            <group>
+                                <group>
+                                    <field name="vehicle_model"
+                                           readonly="state == 'sale_created'"
+                                           placeholder="Ej: F750"/>
+                                    <field name="vehicle_plate"
+                                           readonly="state == 'sale_created'"
+                                           placeholder="Ej: AB123CD"/>
+                                    <field name="trailer_plate"
+                                           readonly="state == 'sale_created'"
+                                           placeholder="Dejar vacío si es la misma"/>
+                                </group>
+                                <group>
+                                    <field name="driver_name"
+                                           readonly="state == 'sale_created'"
+                                           placeholder="Nombre completo del chofer"/>
+                                    <field name="driver_id_number"
+                                           readonly="state == 'sale_created'"
+                                           placeholder="Ej: V-12345678"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notas Internas">
+                            <field name="note" placeholder="Agregue notas..."
+                                   readonly="state == 'sale_created'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ VISTA LISTA PRINCIPAL ============ -->
+    <record id="view_dispatch_note_tree" model="ir.ui.view">
+        <field name="name">dispatch.note.tree</field>
+        <field name="model">dispatch.note</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-warning="state == 'processed'"
+                  decoration-success="state == 'sale_created'"
+                  decoration-danger="state == 'cancel'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="vehicle_plate" optional="hide"/>
+                <field name="vehicle_model" optional="hide"/>
+                <field name="driver_name" optional="hide"/>
+                <field name="customer_ref"/>
+                <field name="line_count" string="Pesajes"/>
+                <field name="entry_time"/>
+                <field name="exit_time"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" 
+                       decoration-warning="state == 'processed'" 
+                       decoration-success="state == 'sale_created'"
+                       decoration-danger="state == 'cancel'"/>
+                <field name="total_kg" sum="Total Kg"/>
+                <field name="total_amount" sum="Total a Cobrar"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ ACCIÓN DE VENTANA ============ -->
+    <record id="action_dispatch_note" model="ir.actions.act_window">
+        <field name="name">Notas de Despacho</field>
+        <field name="res_model">dispatch.note</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree una nueva nota de despacho
+            </p>
+        </field>
+    </record>
+</odoo>

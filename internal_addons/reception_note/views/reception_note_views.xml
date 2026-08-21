@@ -264,7 +264,7 @@
                 <field name="exit_time"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" 
                        decoration-warning="state == 'received'" 
-                       decoration-success="state == 'purchase_created' or state == 'facturado'"
+                       decoration-success="state == 'purchase_created'"
                        decoration-danger="state == 'cancel'"/>
                 <field name="total_kg" sum="Total Kg"/>
                 <field name="total_amount" sum="Total a Pagar"/>
