@@ -85,7 +85,8 @@
                             string="Volver a En Proceso" class="btn-secondary"
                             invisible="state != 'received'"/>
                     <button name="action_generate_purchase_order" type="object"
-                            string="Generar Orden de Compra" class="btn-primary"
+                            string="Confirmar Compra" class="btn-primary"
+                            invisible="state != 'received'"
                             groups="reception_note.group_generate_purchase_order"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"

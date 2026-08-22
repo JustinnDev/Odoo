@@ -89,7 +89,8 @@
                             string="Volver a En Proceso" class="btn-secondary"
                             invisible="state != 'processed'"/>
                     <button name="action_generate_sale_order" type="object"
-                            string="Generar Orden de Venta" class="btn-primary"/>
+                            string="Confirmar Venta" class="btn-primary"
+                            invisible="state != 'processed'"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['draft', 'processed']"/>
