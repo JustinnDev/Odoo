@@ -41,7 +41,7 @@ class DispatchNoteLine(models.Model):
     string='Tipo',
     required=False,
     help='Especificar el tipo de material (Paca, Máquina, Motor, etc.)'
-)
+    )
 
     @api.depends('gross_weight', 'tare_weight')
     def _compute_net_weight(self):
@@ -56,6 +56,9 @@ class DispatchNoteLine(models.Model):
         for line in lines:
             if line.note_id:
                 line.note_id.write({})
+                # Recalcular Resumen
+                if line.note_id.state == 'draft':
+                    line.note_id.action_compute_summary()
         return lines
 
     def write(self, vals):
@@ -64,4 +67,7 @@ class DispatchNoteLine(models.Model):
         for line in self:
             if line.note_id:
                 line.note_id.write({})
+                # Recalcular Resumen
+                if line.note_id.state == 'draft':
+                    line.note_id.action_compute_summary()
         return result

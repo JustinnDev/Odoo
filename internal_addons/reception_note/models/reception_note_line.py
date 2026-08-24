@@ -37,6 +37,12 @@ class ReceptionNoteLine(models.Model):
         digits='Product Unit of Measure'
     )
 
+    type = fields.Char(
+    string='Tipo',
+    required=False,
+    help='Especificar el tipo de material (Paca, Máquina, Motor, etc.)'
+)
+
     @api.depends('gross_weight', 'tare_weight')
     def _compute_net_weight(self):
         for line in self:
@@ -46,16 +52,22 @@ class ReceptionNoteLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
-        # Forzar guardado del padre después de crear líneas
+        # Forzar guardado del padre y recalcular resumen
         for line in lines:
             if line.note_id:
                 line.note_id.write({})
+                # Recalcular resumen automáticamente
+                if line.note_id.state == 'draft':
+                    line.note_id.action_compute_summary()
         return lines
 
     def write(self, vals):
         result = super().write(vals)
-        # Forzar guardado del padre después de modificar líneas
+        # Forzar guardado del padre y recalcular resumen
         for line in self:
             if line.note_id:
                 line.note_id.write({})
+                # Recalcular resumen automáticamente
+                if line.note_id.state == 'draft':
+                    line.note_id.action_compute_summary()
         return result

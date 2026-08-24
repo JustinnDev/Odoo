@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="product_id" required="1"/>
+                <field name="type"/>
                 <field name="gross_weight" required="1"/>
                 <field name="tare_weight" required="1"/>
                 <field name="net_weight" readonly="1"/>
@@ -23,6 +24,7 @@
             <form>
                 <group>
                     <field name="product_id"/>
+                    <field name="type"/>
                     <field name="gross_weight"/>
                     <field name="tare_weight"/>
                     <field name="net_weight" readonly="1"/>
@@ -38,12 +40,13 @@
         <field name="model">reception.note.summary</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="product_id" required="1"/>
-                <field name="subtotal_kg" required="1"/>
-                <field name="discount_percent"/>
+                <field name="product_id" required="1" readonly="1"/>
+                <field name="type" readonly="1"/>
+                <field name="subtotal_kg" required="1" readonly="1"/>
+                <field name="discount_percent" readonly="parent.state not in ['draft']"/>
                 <field name="discount_kg" readonly="1"/>
                 <field name="total_kg" readonly="1"/>
-                <field name="price_unit" required="1"/>
+                <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                 <field name="amount" readonly="1"/>
             </list>
         </field>
@@ -56,12 +59,13 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="product_id"/>
-                    <field name="subtotal_kg"/>
-                    <field name="discount_percent"/>
+                    <field name="product_id" readonly="1"/>
+                    <field name="type" readonly="1"/>
+                    <field name="subtotal_kg" readonly="1"/>
+                    <field name="discount_percent" readonly="parent.state not in ['draft']"/>
                     <field name="discount_kg" readonly="1"/>
                     <field name="total_kg" readonly="1"/>
-                    <field name="price_unit"/>
+                    <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                     <field name="amount" readonly="1"/>
                 </group>
             </form>
@@ -125,9 +129,10 @@
                                    mode="list"
                                    tree_view_id="view_reception_note_line_tree"
                                    form_view_id="view_reception_note_line_form"
-                                   readonly="state == 'purchase_created'">
+                                   readonly="state != 'draft'">
                                 <list editable="bottom">
                                     <field name="product_id" required="1"/>
+                                    <field name="type"/>
                                     <field name="gross_weight" required="1"/>
                                     <field name="tare_weight" required="1"/>
                                     <field name="net_weight" readonly="1"/>
@@ -141,12 +146,13 @@
                                    form_view_id="view_reception_note_summary_form"
                                    readonly="state == 'purchase_created'">
                                 <list editable="bottom">
-                                    <field name="product_id" required="1"/>
-                                    <field name="subtotal_kg" required="1"/>
-                                    <field name="discount_percent"/>
+                                    <field name="product_id" required="1" readonly="1"/>
+                                    <field name="type" readonly="1"/>
+                                    <field name="subtotal_kg" required="1" readonly="1"/>
+                                    <field name="discount_percent" readonly="parent.state not in ['draft']"/>
                                     <field name="discount_kg" readonly="1"/>
                                     <field name="total_kg" readonly="1"/>
-                                    <field name="price_unit" required="1"/>
+                                    <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                                     <field name="amount" readonly="1"/>
                                 </list>
                             </field>

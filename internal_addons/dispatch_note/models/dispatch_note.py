@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 class DispatchNote(models.Model):
     _name = 'dispatch.note'
-    _description = 'Nota de Despacho'
+    _description = 'Nota de Entrega'
     _order = 'entry_time desc, id desc'
 
     name = fields.Char(

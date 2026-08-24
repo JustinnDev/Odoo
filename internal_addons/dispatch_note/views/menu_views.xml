@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <menuitem id="menu_dispatch_note_root"
-              name="Despachos"
+              name="Entregas"
               parent="sale.sale_menu_root"
               action="action_dispatch_note"
               sequence="20"/>

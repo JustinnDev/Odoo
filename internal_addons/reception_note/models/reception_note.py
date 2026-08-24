@@ -39,7 +39,7 @@ class ReceptionNote(models.Model):
 
     state = fields.Selection([
         ('draft', 'En Proceso'),
-        ('received', 'Procesado'),
+        ('received', 'Recibido'),
         ('purchase_created', 'Confirmado'),
         ('cancel', 'Cancelado'),
     ], string='Estado', default='draft', tracking=True)
@@ -116,37 +116,43 @@ class ReceptionNote(models.Model):
             note.line_count = len(note.line_ids)
 
     def action_compute_summary(self):
-        """Agrupa las líneas de pesaje por producto y genera las líneas de resumen."""
+        """Agrupa las líneas de pesaje por producto Y tipo y genera las líneas de resumen."""
         self.ensure_one()
         if not self.line_ids:
             raise UserError(_('No hay líneas de pesaje para agrupar.'))
 
-        # Guardar los precios y descuentos existentes por producto antes de eliminar
+        # Guardar los precios y descuentos existentes por producto + tipo antes de eliminar
         existing_prices = {}
         existing_discounts = {}
         for summary in self.summary_ids:
             if summary.product_id:
-                existing_prices[summary.product_id.id] = summary.price_unit
-                existing_discounts[summary.product_id.id] = summary.discount_percent
+                # Usar producto + tipo como clave
+                key = (summary.product_id.id, summary.type or '')
+                existing_prices[key] = summary.price_unit
+                existing_discounts[key] = summary.discount_percent
 
         # Eliminar resúmenes existentes
         self.summary_ids.unlink()
 
-        # Diccionario para acumular subtotales por producto
+        # Diccionario para acumular subtotales por producto + tipo
         group_data = {}
         for line in self.line_ids:
             if not line.product_id:
                 raise UserError(_('Todas las líneas de pesaje deben tener un producto asignado.'))
             
-            if line.product_id.id in group_data:
-                group_data[line.product_id.id]['subtotal_kg'] += line.net_weight
+            # Clave compuesta por producto + tipo
+            key = (line.product_id.id, line.type or '')
+            
+            if key in group_data:
+                group_data[key]['subtotal_kg'] += line.net_weight
             else:
-                # Usar precio y descuento existentes si están disponibles, sino usar valores por defecto
-                price = existing_prices.get(line.product_id.id, line.product_id.standard_price or 0.0)
-                discount = existing_discounts.get(line.product_id.id, 0.0)
+                # Usar precio y descuento existentes si están disponibles
+                price = existing_prices.get(key, line.product_id.standard_price or 0.0)
+                discount = existing_discounts.get(key, 0.0)
                 
-                group_data[line.product_id.id] = {
+                group_data[key] = {
                     'product_id': line.product_id.id,
+                    'type': line.type or '',
                     'subtotal_kg': line.net_weight,
                     'discount_percent': discount,
                     'price_unit': price,
@@ -165,20 +171,20 @@ class ReceptionNote(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
-    
+        
     def action_generate_purchase_order(self):
-        """Genera una orden de compra (RFQ) a partir del resumen. Y tambien validacion de movimiento en el inventario"""
+        """Genera una orden de compra a partir del resumen, agrupando por producto."""
         self.ensure_one()
-
+        
         # Verificar si ya existe una orden de compra
         if self.purchase_order_id:
             raise UserError(_('Ya se ha generado una orden de compra para esta nota de recepción.'))
-
+        
         # Verificar si el usuario tiene permisos para generar órdenes de compra
         if not self.env.user.has_group('reception_note.group_generate_purchase_order'):
             raise UserError(_('No tiene permisos para generar órdenes de compra.'))
-
-        if self.state not in ['draft', 'received','facturado']:
+        
+        if self.state not in ['draft', 'received', 'facturado']:
             raise UserError(_('Solo se puede generar la orden de compra en estado En Proceso o Recibido.'))
         if not self.summary_ids:
             raise UserError(_('Debe generar primero el resumen por material.'))
@@ -188,50 +194,64 @@ class ReceptionNote(models.Model):
             'partner_id': self.partner_id.id,
             'origin': self.name,
             'partner_ref': self.supplier_ref,
-            'date_order': fields.Datetime.now(),
+            'date_order': self.entry_time,
         }
         purchase_order = self.env['purchase.order'].create(po_vals)
 
-        # Crear líneas de la orden de compra (solo cantidades positivas)
-        po_lines = []
+        # Agrupar por producto (sumando todos los tipos)
+        product_totals = {}
         for summary in self.summary_ids:
-            # Solo incluir líneas con cantidad positiva
             if summary.total_kg > 0:
-                po_lines.append((0, 0, {
-                    'product_id': summary.product_id.id,
-                    'product_qty': summary.total_kg,
-                    'price_unit': summary.price_unit,
-                    'name': summary.product_id.display_name,
-                }))
-            elif summary.total_kg < 0:
-                # Opcional: mostrar una advertencia sobre líneas negativas
-                print(f"Advertencia: {summary.product_id.display_name} tiene cantidad negativa ({summary.total_kg} kg) y no se incluirá en la orden de compra.")
-        
+                product_id = summary.product_id.id
+                if product_id in product_totals:
+                    product_totals[product_id]['product_qty'] += summary.total_kg
+                else:
+                    product_totals[product_id] = {
+                        'product_id': summary.product_id.id,
+                        'product_qty': summary.total_kg,
+                        'price_unit': summary.price_unit,
+                        'name': summary.product_id.display_name,
+                    }
+
+        # Crear líneas de la orden de compra
+        po_lines = []
+        for data in product_totals.values():
+            po_lines.append((0, 0, data))
+
         if not po_lines:
+            purchase_order.unlink()
             raise UserError(_('No hay líneas con cantidad positiva para generar la orden de compra.'))
-        
+
         purchase_order.write({'order_line': po_lines})
 
-         # Confirmar automáticamente la orden de compra
+        # Confirmar automáticamente la orden de compra
         purchase_order.button_confirm()
         
-        # Buscar el picking (recepción) generado por la orden de compra
-        picking = self.env['stock.picking'].search([
-            ('purchase_id', '=', purchase_order.id),
-            ('state', 'not in', ['done', 'cancel'])
-        ], limit=1)
+        # Forzar fechas después de la confirmación
+        purchase_order.write({
+            'date_approve': self.entry_time,
+            'date_order': self.entry_time,
+            'effective_date': self.exit_time or fields.Datetime.now(),
+        })
+        
+        # Obtener el picking desde la orden de compra directamente
+        picking = purchase_order.picking_ids.filtered(
+            lambda p: p.state not in ['done', 'cancel']
+        )
+        if picking:
+            picking = picking[0]  # Tomar el primero
         
         if picking:
+            # Establecer las fechas del picking
+            picking.scheduled_date = self.entry_time
+            
             # Validar la recepción de inventario
             for move in picking.move_ids:
                 if move.state != 'done':
                     if move.move_line_ids:
-                        # Actualizar líneas existentes
                         for move_line in move.move_line_ids:
-                            # En Odoo 18, se usa 'quantity' para la cantidad recibida
                             move_line.quantity = move.product_uom_qty
                     else:
-                        # Crear línea si no existe
                         move.move_line_ids = [(0, 0, {
                             'product_id': move.product_id.id,
                             'quantity': move.product_uom_qty,
@@ -241,22 +261,32 @@ class ReceptionNote(models.Model):
             
             picking.button_validate()
             
+            # Forzar fecha de completado después de validar
+            picking.write({
+                'date_done': self.exit_time or fields.Datetime.now(),
+            })
+            
             self.write({
                 'purchase_order_id': purchase_order.id,
                 'stock_picking_id': picking.id,
                 'state': 'purchase_created',
                 'exit_time': fields.Datetime.now(),
             })
+        else:
+            self.write({
+                'purchase_order_id': purchase_order.id,
+                'state': 'purchase_created',
+                'exit_time': fields.Datetime.now(),
+            })
 
-        # Abrir la orden de compra creada
+        # Recargar la nota de recepción en lugar de abrir la orden de compra
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'purchase.order',
-            'res_id': purchase_order.id,
+            'res_model': 'reception.note',
+            'res_id': self.id,
             'view_mode': 'form',
             'target': 'current',
         }
-
     def action_set_received(self):
         """Marca la nota como recibida y registra la hora de salida."""
         self.ensure_one()

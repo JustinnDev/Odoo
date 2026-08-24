@@ -58,6 +58,11 @@ class ReceptionNoteSummary(models.Model):
         digits='Product Price'
     )
 
+    type = fields.Char(
+    string='Tipo',
+    required=False
+)
+
     @api.depends('subtotal_kg', 'discount_percent')
     def _compute_discount_kg(self):
         for line in self:
