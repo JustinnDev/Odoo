@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ TANQUES DE COMBUSTIBLE ============ -->
+    <!-- Vista lista -->
+    <record id="view_fleet_extension_fuel_tank_tree" model="ir.ui.view">
+        <field name="name">fleet.extension.fuel_tank.tree</field>
+        <field name="model">fleet.extension.fuel_tank</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="vehicle_id"/>
+                <field name="current_fuel"/>
+                <field name="capacity"/>
+                <field name="product_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_fleet_extension_fuel_tank_form" model="ir.ui.view">
+        <field name="name">fleet.extension.fuel_tank.form</field>
+        <field name="model">fleet.extension.fuel_tank</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="vehicle_id"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vehicle_id"/>
+                            <field name="product_id"/>
+                            <field name="source_location_id"/>
+                        </group>
+                        <group>
+                            <field name="capacity"/>
+                            <field name="current_fuel"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_fleet_extension_fuel_tank" model="ir.actions.act_window">
+        <field name="name">Tanques de Combustible</field>
+        <field name="res_model">fleet.extension.fuel_tank</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree un nuevo tanque de combustible
+            </p>
+        </field>
+    </record>
+</odoo>

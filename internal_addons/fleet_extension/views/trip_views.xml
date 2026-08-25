@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============ VIAJES ============ -->
+    <!-- Vista lista -->
+    <record id="view_fleet_extension_trip_tree" model="ir.ui.view">
+        <field name="name">fleet.extension.trip.tree</field>
+        <field name="model">fleet.extension.trip</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'scheduled'"
+                  decoration-warning="state == 'in_process'"
+                  decoration-success="state == 'complete'"
+                  decoration-danger="state == 'cancel'">
+                <field name="name"/>
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <field name="start_date"/>
+                <field name="destination_date" optional="hide"/>
+                <field name="arrival_date" optional="hide"/>
+                <field name="fuel_consumption" sum="Consumo Total"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'scheduled'"
+                       decoration-warning="state == 'in_process'"
+                       decoration-success="state == 'complete'"
+                       decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_fleet_extension_trip_form" model="ir.ui.view">
+        <field name="name">fleet.extension.trip.form</field>
+        <field name="model">fleet.extension.trip</field>
+        <field name="arch" type="xml">
+            <form string="Viaje">
+                <header>
+                    <button name="action_start" type="object"
+                            string="Iniciar Viaje" class="btn-primary"
+                            invisible="state != 'scheduled'"/>
+                    <button name="action_in_destination" type="object"
+                            string="Llegó a Destino" class="btn-secondary"
+                            invisible="state != 'in_process'"/>
+                    <button name="action_arrival" type="object"
+                            string="Regresó a Empresa" class="btn-secondary"
+                            invisible="state != 'in_process'"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancelar" class="btn-secondary"
+                            invisible="state not in ['scheduled','in_process']"/>                    
+                    <button name="action_fuel_check" type="object"
+                            string="Confirmar Combustible" class="btn-secondary"
+                            invisible="state != 'complete' or check_fuel_state == 'verified'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="scheduled,in_process,complete"
+                           statusbar_colors='{"scheduled": "info", "in_process": "warning", "complete": "success", "cancel": "danger"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="vehicle_id"/>
+                            <field name="fuel_tank_id" readonly="1"/>
+                            <field name="driver_id"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="destination_date"/>
+                            <field name="arrival_date"/>
+                        </group>
+                    </group>
+                    <group string="Ubicaciones">
+                        <group>
+                            <field name="start_location_id"/>
+                            <field name="destination_location_id"/>
+                        </group>
+                    </group>
+                    <group string="Combustible">
+                        <group>
+                            <field name="initial_fuel"/>
+                            <field name="final_fuel" readonly="check_fuel_state == 'verified'"/>
+                            <field name="fuel_consumption" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notas">
+                        <field name="internal_note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_fleet_extension_trip" model="ir.actions.act_window">
+        <field name="name">Viajes</field>
+        <field name="res_model">fleet.extension.trip</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree un nuevo viaje
+            </p>
+        </field>
+    </record>
+</odoo>

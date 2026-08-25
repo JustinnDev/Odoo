@@ -1,22 +1,26 @@
-Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepciones)
-
+Mejorar los viste mobile (Listo recepcion y despacho)
+Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
-
 Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min
 
-añadir campo para foto de vehiculo nota de entrega/despacho 
 
+añadir campo para foto de vehiculo nota de entrega/despacho 
 añadiir resumen simplificado en nota de despacho 
 
 hacer un modulo de produccion 
 
+
 crear otro usuario con limitaciones 
 
-
-
-
-Mejorar los viste mobile (Listo Ambos)
 Hacer que el resumen solo se pueda modificar el precio (listo recepcion y despacho)
 Hace que al estar procesado solo este en modo lectura los pesajes (listo recepcion y despacho)
+
+
+
+Modulo Flete
+
+Confirmar Buen Funcionamiento de Viajes (Todo parece correcto)
+Confirmar Buen Funcionamiento de Combustibles (Aun falta sus funcionalidades, por los momentos solo son datos)
+Confirmar Buen Funcionamiento de Ubicacion (No es complejo el modelo, es solo datos or los momentos)
 
 

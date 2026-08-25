@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fleet_extension_location_user,fleet.extension.location.user,model_fleet_extension_location,base.group_user,1,1,1,0
+access_fleet_extension_location_manager,fleet.extension.location.manager,model_fleet_extension_location,fleet.fleet_group_manager,1,1,1,1
+access_fleet_extension_fuel_tank_user,fleet.extension.fuel_tank.user,model_fleet_extension_fuel_tank,base.group_user,1,1,1,0
+access_fleet_extension_fuel_tank_manager,fleet.extension.fuel_tank.manager,model_fleet_extension_fuel_tank,fleet.fleet_group_manager,1,1,1,1
+access_fleet_extension_trip_user,fleet.extension.trip.user,model_fleet_extension_trip,base.group_user,1,1,1,0
+access_fleet_extension_trip_manager,fleet.extension.trip.manager,model_fleet_extension_trip,fleet.fleet_group_manager,1,1,1,1
