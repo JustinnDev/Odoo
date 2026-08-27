@@ -1,4 +1,3 @@
-Mejorar los viste mobile (Listo recepcion y despacho)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
 Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min
@@ -12,15 +11,17 @@ hacer un modulo de produccion
 
 crear otro usuario con limitaciones 
 
-Hacer que el resumen solo se pueda modificar el precio (listo recepcion y despacho)
-Hace que al estar procesado solo este en modo lectura los pesajes (listo recepcion y despacho)
-
-
 
 Modulo Flete
 
+Generar un servicio al repostar combustible 
+Hacer que si no se va a condumir de inventario, de alguna manera se registre como gasto (en analisis)
+Afiliar el Tanque al vehiculo vanilla 
+
+Mejorar naming del movimiento de inventario al repostar o extracter  Combustibles de los tanques (Listo)
+bool para saber si se consumira o no del inventario (listo) 
 Confirmar Buen Funcionamiento de Viajes (Todo parece correcto)
-Confirmar Buen Funcionamiento de Combustibles (Aun falta sus funcionalidades, por los momentos solo son datos)
-Confirmar Buen Funcionamiento de Ubicacion (No es complejo el modelo, es solo datos or los momentos)
+Confirmar Buen Funcionamiento de Combustibles (Listo) 
+Confirmar Buen Funcionamiento de Ubicacion (Listo)
 
 

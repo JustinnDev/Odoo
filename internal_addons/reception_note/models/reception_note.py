@@ -270,13 +270,13 @@ class ReceptionNote(models.Model):
                 'purchase_order_id': purchase_order.id,
                 'stock_picking_id': picking.id,
                 'state': 'purchase_created',
-                'exit_time': fields.Datetime.now(),
+                'exit_time': self.exit_time or fields.Datetime.now(),
             })
         else:
             self.write({
                 'purchase_order_id': purchase_order.id,
                 'state': 'purchase_created',
-                'exit_time': fields.Datetime.now(),
+                'exit_time': self.exit_time or fields.Datetime.now(),
             })
 
         # Recargar la nota de recepción en lugar de abrir la orden de compra

@@ -8,9 +8,10 @@
         <field name="arch" type="xml">
             <list>
                 <field name="vehicle_id"/>
-                <field name="current_fuel"/>
+                <field name="current_fuel" readonly='1'/>
                 <field name="capacity"/>
                 <field name="product_id"/>
+                <field name="source_location_id" optional="hide"/>
             </list>
         </field>
     </record>
@@ -20,7 +21,15 @@
         <field name="name">fleet.extension.fuel_tank.form</field>
         <field name="model">fleet.extension.fuel_tank</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Tanque de Combustible">
+                <header>
+                    <button name="action_refuel" type="object"
+                            string="Repostar" class="btn-primary"/>
+                    <button name="action_consume" type="object"
+                            string="Consumir" class="btn-secondary"/>
+                    <button name="action_extract" type="object"
+                            string="Extraer" class="btn-secondary"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -39,6 +48,36 @@
                         </group>
                     </group>
                 </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista formulario del asistente de repostaje -->
+    <record id="view_fleet_extension_fuel_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.extension.fuel.wizard.form</field>
+        <field name="model">fleet.extension.fuel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Operación de Combustible">
+                <group>
+                    <field name="tank_id" invisible="1"/>
+                    <field name="operation_type" invisible="1"/>
+                    <field name="product_id" invisible="1"/>
+                    <field name="source_location_id" invisible="1"/>
+                </group>
+                <group string="Detalles de la Operación">
+                    <group>
+                        <field name="quantity" required="1"/>
+                        <field name="inventory_consumption" invisible="operation_type == 'consume'"/>
+                        <field name="current_fuel" readonly="1"/>
+                        <field name="new_fuel_level" readonly="1"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Confirmar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
             </form>
         </field>
     </record>
