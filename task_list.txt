@@ -1,3 +1,4 @@
+Ocultar subtotal del resumen (listo Recepcion y Entrega)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
 Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min
@@ -14,14 +15,18 @@ crear otro usuario con limitaciones
 
 Modulo Flete
 
+Crear Generador de Servicios 
 Generar un servicio al repostar combustible 
 Hacer que si no se va a condumir de inventario, de alguna manera se registre como gasto (en analisis)
 Afiliar el Tanque al vehiculo vanilla 
+Agregar multiples paradas
+
 
 Mejorar naming del movimiento de inventario al repostar o extracter  Combustibles de los tanques (Listo)
 bool para saber si se consumira o no del inventario (listo) 
-Confirmar Buen Funcionamiento de Viajes (Todo parece correcto)
+Confirmar Buen Funcionamiento de Viajes (Listo)
 Confirmar Buen Funcionamiento de Combustibles (Listo) 
 Confirmar Buen Funcionamiento de Ubicacion (Listo)
+
 
 

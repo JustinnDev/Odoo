@@ -46,7 +46,7 @@ class ReceptionNoteSummary(models.Model):
     )
 
     price_unit = fields.Float(
-        string='Precio Unitario',
+        string='Precio Uni',
         required=True,
         digits='Product Price'
     )

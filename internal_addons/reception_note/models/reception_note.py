@@ -21,19 +21,19 @@ class ReceptionNote(models.Model):
     )
 
     supplier_ref = fields.Char(
-        string='Referencia del proveedor',
+        string='Referencia',
         help='Placa del vehículo, número de guía, etc.'
     )
 
     entry_time = fields.Datetime(
-        string='Fecha y hora de entrada',
+        string='Entrada',
         required=True,
         default=fields.Datetime.now,
         readonly=False
     )
 
     exit_time = fields.Datetime(
-        string='Fecha y hora de salida',
+        string='Salida',
         readonly=False
     )
 
