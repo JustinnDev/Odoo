@@ -20,9 +20,9 @@ class FleetExtensionFuelWizard(models.TransientModel):
         'product.product',
         string='Producto de Combustible',
     )
-    source_location_id = fields.Many2one(
+    consume_location_id = fields.Many2one(
         'stock.location',
-        string='Ubicación de Origen',
+        string='Ubicación de Consumo',
     )
     quantity = fields.Float(
         string='Cantidad',

@@ -1,3 +1,5 @@
+Modulo General
+
 Ocultar subtotal del resumen (listo Recepcion y Entrega)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
@@ -15,11 +17,16 @@ crear otro usuario con limitaciones
 
 Modulo Flete
 
-Crear Generador de Servicios 
-Generar un servicio al repostar combustible 
+Crear Generador de Servicios (Listo)
+Generar un servicio al repostar combustible (Listo) 
+Hacer que el viaje se registre en historial de conductores (Listo)
+Hacer que un vehiculo solo tenga un viaje activo a la vez
+Crear programador de viajes
+Crear modelo para mantenimiento
 Hacer que si no se va a condumir de inventario, de alguna manera se registre como gasto (en analisis)
 Afiliar el Tanque al vehiculo vanilla 
 Agregar multiples paradas
+Agregar multiples conductores
 
 
 Mejorar naming del movimiento de inventario al repostar o extracter  Combustibles de los tanques (Listo)

@@ -36,6 +36,7 @@ class FleetExtensionTrip(models.Model):
     driver_id = fields.Many2one(
         'res.partner',
         string='Conductor',
+        required=True,
     )
     start_date = fields.Datetime(
         string='Fecha de Salida',
@@ -106,6 +107,21 @@ class FleetExtensionTrip(models.Model):
             self.start_date = fields.Datetime.now()
         if not self.initial_fuel:
             self.initial_fuel = self.fuel_tank_id.current_fuel
+
+        # Verificar si el conductor es diferente al asignado actualmente
+        if self.vehicle_id.driver_id != self.driver_id:
+            # Cerrar el historial anterior si existe
+            last_assignment = self.env['fleet.vehicle.assignation.log'].search([
+                ('vehicle_id', '=', self.vehicle_id.id),
+                ('date_end', '=', False),
+            ], limit=1, order='date_start desc')
+            
+            if last_assignment:
+                # Cerrar la asignación anterior
+                last_assignment.date_end = self.start_date or fields.Datetime.now()
+            
+            self.vehicle_id.driver_id = self.driver_id
+            
         self.state = 'in_process'
 
     def action_in_destination(self):

@@ -1,9 +1,9 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
-
 class FleetExtensionFuelTank(models.Model):
     _name = 'fleet.extension.fuel_tank'
+    _inherit = 'fleet.extension.service.generator'
     _description = 'Tanque de Combustible Virtual'
     _rec_name = 'vehicle_id'
 
@@ -34,12 +34,19 @@ class FleetExtensionFuelTank(models.Model):
         required=True,
         help='Producto de inventario que se consume al repostar.',
     )
-    source_location_id = fields.Many2one(
+    consume_location_id = fields.Many2one(
         'stock.location',
-        string='Ubicación de Origen',
+        string='Ubicación de Consumo',
         required=True,
         default=lambda self: self.env.ref('stock.stock_location_stock'),
         help='Ubicación de inventario desde donde se descuenta el combustible.',
+    )
+
+    service_type_id = fields.Many2one(
+    'fleet.service.type',
+    string='Tipo de Servicio',
+    required=True,
+    help='Tipo de servicio que se generará al repostar',
     )
 
     @api.constrains('current_fuel', 'capacity')
@@ -62,7 +69,7 @@ class FleetExtensionFuelTank(models.Model):
                 'default_tank_id': self.id,
                 'default_operation_type': 'refuel',
                 'default_product_id': self.product_id.id,
-                'default_source_location_id': self.source_location_id.id,
+                'default_source_location_id': self.consume_location_id.id,
             },
         }
 
@@ -92,7 +99,7 @@ class FleetExtensionFuelTank(models.Model):
                 'default_tank_id': self.id,
                 'default_operation_type': 'extract',
                 'default_product_id': self.product_id.id,
-                'default_source_location_id': self.source_location_id.id,
+                'default_source_location_id': self.consume_location_id.id,
             },
         }
 
@@ -106,6 +113,15 @@ class FleetExtensionFuelTank(models.Model):
 
         if inventory_consumption == True:
             self._create_stock_move(product, quantity, 'out')
+
+        self.generate_service(
+            vehicle=self.vehicle_id,
+            description=f'{product.name}',
+            service_type=self.service_type_id,
+            date=fields.Datetime.now(),
+            amount=quantity,
+            notes=f'Repostaje automático desde tanque virtual',
+        )
 
         self.current_fuel += quantity
 
@@ -145,10 +161,10 @@ class FleetExtensionFuelTank(models.Model):
         if move_type == 'out':
             # Consumo: de stock físico a ubicación de consumo
             source_location = physical_location
-            dest_location = self.source_location_id
+            dest_location = self.consume_location_id
         else:
             # Extracción: de ubicación de consumo a stock físico
-            source_location = self.source_location_id
+            source_location = self.consume_location_id
             dest_location = physical_location
         
         # Crear el picking (traslado interno)
