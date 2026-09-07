@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_planta_bale" model="ir.sequence">
+        <field name="name">Paca</field>
+        <field name="code">planta.bale</field>
+        <field name="prefix">BALE/</field>
+        <field name="padding">5</field>
+    </record>
+</odoo>

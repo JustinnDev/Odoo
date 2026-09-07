@@ -10,8 +10,8 @@ añadir campo para foto nota papel
 añadiir resumen simplificado en nota de despacho (sin tipos)
 
 Modulo Planta
-Pacas
-Produccion
+Pacas (Listo) (agegar estado si esta pagada o no)
+Produccion 
 
 
 Modulo Flete

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista lista -->
+    <record id="view_planta_bale_tree" model="ir.ui.view">
+        <field name="name">planta.bale.tree</field>
+        <field name="model">planta.bale</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'in_process'"
+                decoration-success="state == 'available'"
+                decoration-muted="state == 'dispatched'"
+                decoration-danger="state == 'cancel'">
+                <field name="name"/>
+                <field name="material_type_id"/>
+                <field name="weight"/>
+                <field name="state" widget="badge" 
+                    decoration-info="state == 'in_process'"
+                    decoration-success="state == 'available'"
+                    decoration-muted="state == 'dispatched'"
+                    decoration-danger="state == 'cancel'"/>
+                <field name="start_date"/>
+                <field name="finish_date" optional="hide"/>
+                <field name="duration" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_planta_bale_form" model="ir.ui.view">
+        <field name="name">planta.bale.form</field>
+        <field name="model">planta.bale</field>
+        <field name="arch" type="xml">
+            <form string="Paca">
+                <header>
+                    <!-- Botón: Marcar Disponible (solo en estado in_process) -->
+                    <button name="action_available" type="object"
+                            string="Marcar Disponible" class="btn-primary"
+                            invisible="state != 'in_process'"/>
+                    
+                    <!-- Botón: Despachar (solo en estado available) -->
+                    <button name="action_dispatch" type="object"
+                            string="Despachar" class="btn-primary"
+                            invisible="state != 'available'"/>
+                    
+                    <!-- Botón: Volver a En Proceso (solo en estado available) -->
+                    <button name="action_set_in_process" type="object"
+                            string="Volver a En Proceso" class="btn-secondary"
+                            invisible="state != 'available'"/>
+                    
+                    <!-- Botón: Cancelar (en in_process o available) -->
+                    <button name="action_cancel" type="object"
+                            string="Cancelar" class="btn-secondary"
+                            invisible="state not in ['in_process', 'available']"/>
+                    
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="in_process,available,dispatched"
+                           statusbar_colors='{"in_process": "info", "available": "success", "dispatched": "muted"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="material_type_id" readonly="state != 'in_process'"/>
+                            <field name="weight"/>
+                            <field name="duration" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="finish_date"/>
+                        </group>
+                    </group>
+                    <group string="Posición en Planta">
+                        <group>
+                            <field name="position_x" readonly="state == 'dispatched'"/>
+                            <field name="position_y" readonly="state == 'dispatched'"/>
+                        </group>
+                    </group>
+                    <group string="Creadores">
+                        <field name="creator_ids" widget="many2many_tags"
+                               readonly="state == 'dispatched'"/>
+                    </group>
+                    <group string="Notas">
+                        <field name="note"
+                               readonly="state == 'dispatched'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_planta_bale" model="ir.actions.act_window">
+        <field name="name">Pacas</field>
+        <field name="res_model">planta.bale</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree una nueva paca
+            </p>
+        </field>
+    </record>
+</odoo>
