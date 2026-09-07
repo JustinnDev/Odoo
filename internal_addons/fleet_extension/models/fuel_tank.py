@@ -103,7 +103,7 @@ class FleetExtensionFuelTank(models.Model):
             },
         }
 
-    def refuel(self, product, quantity, inventory_consumption):
+    def refuel(self, product, quantity, inventory_consumption, vendor):
         """Aumenta el combustible del tanque consumiendo producto del inventario."""
         self.ensure_one()
         if quantity <= 0:
@@ -121,6 +121,7 @@ class FleetExtensionFuelTank(models.Model):
             date=fields.Datetime.now(),
             amount=quantity,
             notes=f'Repostaje automático desde tanque virtual',
+            vendor_id=vendor,
         )
 
         self.current_fuel += quantity

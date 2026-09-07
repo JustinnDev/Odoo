@@ -5,21 +5,18 @@ Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepci
 Hacer un boton para enviar una pesada de note_rec a una note_dis
 Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min
 
-
 añadir campo para foto de vehiculo nota de entrega/despacho 
-añadiir resumen simplificado en nota de despacho 
+añadir campo para foto nota papel
+añadiir resumen simplificado en nota de despacho (sin tipos)
 
-hacer un modulo de produccion 
-
-
-crear otro usuario con limitaciones 
+Modulo Planta
+Pacas
+Produccion
 
 
 Modulo Flete
 
-Crear Generador de Servicios (Listo)
-Generar un servicio al repostar combustible (Listo) 
-Hacer que el viaje se registre en historial de conductores (Listo)
+Añadir fecha para repostaje
 Hacer que un vehiculo solo tenga un viaje activo a la vez
 Crear programador de viajes
 Crear modelo para mantenimiento
@@ -29,11 +26,18 @@ Agregar multiples paradas
 Agregar multiples conductores
 
 
+
+Añadir proveedor para repostaje (listo)
+Crear Generador de Servicios (Listo)
+Generar un servicio al repostar combustible (Listo) 
+Hacer que el viaje se registre en historial de conductores (Listo)
 Mejorar naming del movimiento de inventario al repostar o extracter  Combustibles de los tanques (Listo)
 bool para saber si se consumira o no del inventario (listo) 
 Confirmar Buen Funcionamiento de Viajes (Listo)
 Confirmar Buen Funcionamiento de Combustibles (Listo) 
 Confirmar Buen Funcionamiento de Ubicacion (Listo)
+crear otro usuario con limitaciones (Listo) 
+
 
 
 

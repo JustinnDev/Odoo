@@ -47,6 +47,11 @@ class FleetExtensionFuelWizard(models.TransientModel):
         help = 'Indica si la operacion afectara la producto de inventario'               
     )
 
+    vendor_id = fields.Many2one(
+        'res.partner',
+        string='Responsable',
+    )
+
     @api.depends('quantity', 'operation_type', 'current_fuel')
     def _compute_new_fuel_level(self):
         for wizard in self:
@@ -64,7 +69,7 @@ class FleetExtensionFuelWizard(models.TransientModel):
             raise UserError(_('La cantidad debe ser positiva.'))
 
         if self.operation_type == 'refuel':
-            self.tank_id.refuel(self.product_id, self.quantity, self.inventory_consumption)
+            self.tank_id.refuel(self.product_id, self.quantity, self.inventory_consumption, self.vendor_id)
         elif self.operation_type == 'consume':
             self.tank_id.consume(self.quantity)
         elif self.operation_type == 'extract':

@@ -149,7 +149,7 @@ class FleetExtensionTrip(models.Model):
         
         # Actualizar el tanque del vehículo
         if self.fuel_tank_id:
-            self.fuel_tank_id.current_fuel = self.final_fuel
+            self.fuel_tank_id.current_fuel = self.fuel_tank_id.current_fuel - self.fuel_consumption
 
     def action_cancel(self):
         """Cancela el viaje."""
