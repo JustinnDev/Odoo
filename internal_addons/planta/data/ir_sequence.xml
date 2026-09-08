@@ -3,7 +3,14 @@
     <record id="seq_planta_bale" model="ir.sequence">
         <field name="name">Paca</field>
         <field name="code">planta.bale</field>
-        <field name="prefix">BALE/</field>
-        <field name="padding">5</field>
+        <field name="prefix">BALE/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_planta_production" model="ir.sequence">
+        <field name="name">Producción</field>
+        <field name="code">planta.production</field>
+        <field name="prefix">PROD/%(year)s/</field>
+        <field name="padding">4</field>
     </record>
 </odoo>

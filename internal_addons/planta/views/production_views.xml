@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista lista -->
+    <record id="view_planta_production_tree" model="ir.ui.view">
+        <field name="name">planta.production.tree</field>
+        <field name="model">planta.production</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'done'"
+                  decoration-warning="state == 'paid'"
+                  decoration-danger="state == 'cancel'">
+                <field name="name"/>
+                <field name="product_from_id"/>
+                <field name="product_to_id"/>
+                <field name="quantity"/>
+                <field name="date"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'paid'"
+                       decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_planta_production_form" model="ir.ui.view">
+        <field name="name">planta.production.form</field>
+        <field name="model">planta.production</field>
+        <field name="arch" type="xml">
+            <form string="Producción">
+                <header>
+                    <button name="action_process" type="object"
+                            string="Procesar" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_set_paid" type="object"
+                            string="Marcar Pagada" class="btn-secondary"
+                            invisible="state != 'done'"/>
+                    <button name="action_set_draft" type="object"
+                            string="Volver a Borrador" class="btn-secondary"
+                            invisible="state not in ['done', 'cancel']"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancelar" class="btn-secondary"
+                            invisible="state not in ['draft', 'done']"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done,paid"
+                           statusbar_colors='{"draft": "info", "done": "success", "paid": "warning", "cancel": "danger"}'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="product_from_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="product_to_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="quantity"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="date"
+                                   readonly="state != 'draft'"/>
+                            <field name="source_location_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="dest_location_id"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Creadores">
+                        <field name="creator_ids" widget="many2many_tags"
+                               readonly="state != 'draft'"/>
+                    </group>
+                    <group string="Notas">
+                        <field name="note"
+                               readonly="state == 'paid'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción de ventana -->
+    <record id="action_planta_production" model="ir.actions.act_window">
+        <field name="name">Producciones</field>
+        <field name="res_model">planta.production</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree una nueva producción
+            </p>
+        </field>
+    </record>
+</odoo>

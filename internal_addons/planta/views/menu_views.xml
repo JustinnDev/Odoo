@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Menú principal de la app -->
     <menuitem id="menu_planta_root"
               name="Planta"
               sequence="10"
               web_icon="planta,static/description/icon.png"/>
     
-    <!-- Submenú de Pacas -->
     <menuitem id="menu_planta_bale"
               name="Pacas"
               parent="menu_planta_root"
               action="action_planta_bale"
               sequence="10"/>
+    
+    <menuitem id="menu_planta_production"
+              name="Producciones"
+              parent="menu_planta_root"
+              action="action_planta_production"
+              sequence="20"/>
 </odoo>

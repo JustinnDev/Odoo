@@ -19,6 +19,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
         'views/bale_views.xml',
+        'views/production_views.xml',
         'views/menu_views.xml',
     ],
     'installable': True,
