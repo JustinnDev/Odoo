@@ -6,17 +6,20 @@
         <field name="model">planta.bale</field>
         <field name="arch" type="xml">
             <list decoration-info="state == 'in_process'"
-                decoration-success="state == 'available'"
-                decoration-muted="state == 'dispatched'"
-                decoration-danger="state == 'cancel'">
+                  decoration-success="state == 'available'"
+                  decoration-muted="state == 'dispatched'"
+                  decoration-danger="state == 'cancel'">
                 <field name="name"/>
                 <field name="material_type_id"/>
                 <field name="weight"/>
+                <field name="payment_state" widget="badge"
+                       decoration-warning="payment_state == 'unpaid'"
+                       decoration-success="payment_state == 'paid'"/>
                 <field name="state" widget="badge" 
-                    decoration-info="state == 'in_process'"
-                    decoration-success="state == 'available'"
-                    decoration-muted="state == 'dispatched'"
-                    decoration-danger="state == 'cancel'"/>
+                       decoration-info="state == 'in_process'"
+                       decoration-success="state == 'available'"
+                       decoration-muted="state == 'dispatched'"
+                       decoration-danger="state == 'cancel'"/>
                 <field name="start_date"/>
                 <field name="finish_date" optional="hide"/>
                 <field name="duration" optional="hide"/>
@@ -51,9 +54,19 @@
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['in_process', 'available']"/>
                     
+                    <!-- Botones de pago -->
+                    <button name="action_set_paid" type="object"
+                            string="Marcar Pagada" class="btn-secondary"
+                            invisible="payment_state != 'unpaid'"
+                            groups="base.group_system"/>
+                    <button name="action_set_unpaid" type="object"
+                            string="Marcar Sin Pagar" class="btn-secondary"
+                            invisible="payment_state != 'paid'"
+                            groups="base.group_system"/>
+                    
                     <field name="state" widget="statusbar"
                            statusbar_visible="in_process,available,dispatched"
-                           statusbar_colors='{"in_process": "info", "available": "success", "dispatched": "muted"}'/>
+                           statusbar_colors='{"in_process": "info", "available": "success", "dispatched": "muted", "cancel": "danger"}'/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -70,6 +83,10 @@
                         <group>
                             <field name="start_date"/>
                             <field name="finish_date"/>
+                            <field name="payment_state" widget="badge"
+                                   decoration-warning="payment_state == 'unpaid'"
+                                   decoration-success="payment_state == 'paid'"
+                                   readonly="1"/>
                         </group>
                     </group>
                     <group string="Posición en Planta">

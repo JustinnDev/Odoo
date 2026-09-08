@@ -10,6 +10,7 @@
                   decoration-warning="state == 'paid'"
                   decoration-danger="state == 'cancel'">
                 <field name="name"/>
+                <field name="partner_id"/>
                 <field name="product_from_id"/>
                 <field name="product_to_id"/>
                 <field name="quantity"/>
@@ -54,6 +55,9 @@
                     </div>
                     <group>
                         <group>
+                            <field name="partner_id"
+                                   readonly="state != 'draft'"
+                                   required="1"/>
                             <field name="product_from_id"
                                    readonly="state != 'draft'"/>
                             <field name="product_to_id"

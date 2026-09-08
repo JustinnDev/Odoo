@@ -62,6 +62,12 @@ class PlantaBale(models.Model):
         string='Creadores',
         help='Operadores que participaron en la creación de la paca.',
     )
+
+    payment_state = fields.Selection([
+    ('unpaid', 'Sin Pagar'),
+    ('paid', 'Pagada'),
+    ], string='Estado de Pago', default='unpaid', tracking=True)
+
     note = fields.Text(string='Notas')
 
     @api.model_create_multi
@@ -124,3 +130,15 @@ class PlantaBale(models.Model):
         if self.state not in ['in_process', 'available']:
             raise UserError(_('Solo se puede cancelar una paca en proceso o disponible.'))
         self.state = 'cancel'
+
+    def action_set_paid(self):
+        """Marca la paca como pagada."""
+        self.ensure_one()
+        if self.state not in ['available', 'dispatched']:
+            raise UserError(_('Solo se puede pagar una paca disponible o despachada.'))
+        self.payment_state = 'paid'
+
+    def action_set_unpaid(self):
+        """Marca la paca como sin pagar."""
+        self.ensure_one()
+        self.payment_state = 'unpaid'

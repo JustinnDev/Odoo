@@ -21,23 +21,30 @@ class PlantaProduction(models.Model):
         ('paid', 'Pagada'),
         ('cancel', 'Cancelada'),
     ], string='Estado', default='draft', tracking=True)
+
     creator_ids = fields.Many2many(
         'hr.employee',
         string='Creadores',
         help='Empleados que participaron en la producción.',
     )
+
+    partner_id = fields.Many2one(
+        'res.partner',
+        string='Contacto',
+        required=True,
+        help='Contacto asociado a la producción para identificar el tipo.',
+    )
+
     product_from_id = fields.Many2one(
         'product.product',
         string='Material de Origen',
         required=True,
-        domain=[('type', '=', 'product')],
         help='Material que se consume en la producción.',
     )
     product_to_id = fields.Many2one(
         'product.product',
         string='Material de Destino',
         required=True,
-        domain=[('type', '=', 'product')],
         help='Material que se produce.',
     )
     quantity = fields.Float(
@@ -104,6 +111,7 @@ class PlantaProduction(models.Model):
             move_type='out',
             source_location=self.source_location_id,
             dest_location=self.env.ref('stock.stock_location_inventory') if self.env.ref('stock.stock_location_inventory', raise_if_not_found=False) else self.source_location_id,
+            partner=self.partner_id
         )
 
         # Crear movimiento de entrada del material de destino
@@ -113,11 +121,26 @@ class PlantaProduction(models.Model):
             move_type='in',
             source_location=self.env.ref('stock.stock_location_inventory') if self.env.ref('stock.stock_location_inventory', raise_if_not_found=False) else self.dest_location_id,
             dest_location=self.dest_location_id,
+            partner=self.partner_id
+        )
+
+        # Descontar material de origen
+        self.env['stock.quant']._update_available_quantity(
+            self.product_from_id,
+            self.source_location_id,
+            -self.quantity,  # Negativo para descontar
+        )
+
+        # Agregar material de destino
+        self.env['stock.quant']._update_available_quantity(
+            self.product_to_id,
+            self.dest_location_id,
+            self.quantity,  # Positivo para agregar
         )
 
         self.write({
             'state': 'done',
-            'date': fields.Datetime.now(),
+            'date': self.date or fields.Datetime.now(),
         })
 
     def action_set_paid(self):
@@ -141,7 +164,7 @@ class PlantaProduction(models.Model):
             raise UserError(_('Solo se puede cancelar una producción en borrador o procesada.'))
         self.state = 'cancel'
 
-    def _create_stock_move(self, product, quantity, move_type, source_location, dest_location):
+    def _create_stock_move(self, product, quantity, move_type, source_location, dest_location, partner=None):
         """
         Crea un movimiento de stock para consumo o producción.
         
@@ -151,6 +174,7 @@ class PlantaProduction(models.Model):
             move_type: 'out' (consumo) o 'in' (producción)
             source_location: stock.location record
             dest_location: stock.location record
+            partner: res.partner record (opcional) - Contacto asociado
         """
         self.ensure_one()
         
@@ -162,6 +186,7 @@ class PlantaProduction(models.Model):
             'picking_type_id': picking_type.id,
             'location_id': source_location.id,
             'location_dest_id': dest_location.id,
+            'partner_id': partner.id if partner else False,  # Agregar contacto
             'move_ids': [(0, 0, {
                 'name': f'Producción {self.name} - {product.name}',
                 'product_id': product.id,
@@ -169,6 +194,7 @@ class PlantaProduction(models.Model):
                 'product_uom': product.uom_id.id,
                 'location_id': source_location.id,
                 'location_dest_id': dest_location.id,
+                'partner_id': partner.id if partner else False,  # También en el move
             })],
         }
         picking = self.env['stock.picking'].create(picking_vals)
@@ -179,17 +205,24 @@ class PlantaProduction(models.Model):
         
         # Establecer cantidades
         for move in picking.move_ids:
+            # Asegurar que el partner también esté en los move_lines si es necesario
             if move.move_line_ids:
                 for move_line in move.move_line_ids:
                     if move_line.quantity == 0:
                         move_line.quantity = move.product_uom_qty
+                    # Opcional: también agregar partner a las líneas de movimiento
+                    if partner and not move_line.partner_id:
+                        move_line.partner_id = partner.id
             else:
-                move.move_line_ids = [(0, 0, {
+                move_line_vals = {
                     'product_id': move.product_id.id,
                     'quantity': move.product_uom_qty,
                     'location_id': move.location_id.id,
                     'location_dest_id': move.location_dest_id.id,
-                })]
+                }
+                if partner:
+                    move_line_vals['partner_id'] = partner.id
+                move.move_line_ids = [(0, 0, move_line_vals)]
         
         # Validar
         picking.button_validate()

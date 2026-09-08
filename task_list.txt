@@ -1,5 +1,7 @@
 Modulo General
 
+hacer que imprima 
+
 Ocultar subtotal del resumen (listo Recepcion y Entrega)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
@@ -9,10 +11,20 @@ añadir campo para foto de vehiculo nota de entrega/despacho
 añadir campo para foto nota papel
 añadiir resumen simplificado en nota de despacho (sin tipos)
 
-Modulo Planta
-Pacas (Listo) (agegar estado si esta pagada o no)
-Produccion 
 
+
+
+
+
+
+
+------------------------------------------------------
+
+Modulo Planta
+Pacas (Listo) (hacer varias acciones desde el list)
+Produccion (Listo) (hacer que el movimiento de inventario no use la funcion _update_available_quantity())
+
+------------------------------------------------------
 
 Modulo Flete
 
