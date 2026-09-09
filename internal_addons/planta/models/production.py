@@ -230,6 +230,13 @@ class PlantaProduction(models.Model):
             # Crear o actualizar líneas de movimiento
             if not move.move_line_ids:
                 # Crear nueva línea de movimiento
+
+            # Asegurar que el partner también esté en los move_lines si es necesario
+            if move.move_line_ids:
+                for move_line in move.move_line_ids:
+                    if move_line.quantity == 0:
+                        move_line.quantity = move.product_uom_qty
+            else:
                 move_line_vals = {
                     'product_id': move.product_id.id,
                     'quantity': move.product_uom_qty,
