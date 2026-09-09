@@ -69,9 +69,9 @@
                             <field name="date"
                                    readonly="state != 'draft'"/>
                             <field name="source_location_id"
-                                   readonly="state != 'draft'"/>
+                                   invisible="1"/>
                             <field name="dest_location_id"
-                                   readonly="state != 'draft'"/>
+                                   invisible="1"/>
                         </group>
                     </group>
                     <group string="Creadores">

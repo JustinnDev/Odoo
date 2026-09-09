@@ -89,58 +89,77 @@ class PlantaProduction(models.Model):
             if production.product_from_id == production.product_to_id:
                 raise ValidationError(_('El material de origen y destino no pueden ser iguales.'))
 
+
+    @api.model
+    def _get_production_location(self):
+        """Obtiene o crea la ubicación virtual de producción"""
+        location = self.env['stock.location'].search([
+            ('name', '=', 'PLANTA/Produccion'),
+            ('usage', '=', 'production')
+        ], limit=1)
+        
+        if not location:
+            # Crear ubicación virtual de producción
+            location = self.env['stock.location'].create({
+                'name': 'PLANTA/Produccion',
+                'usage': 'production',  # Importante: 'production' para que sea virtual
+                'company_id': self.env.company.id,
+            })
+        return location
+    
     def action_process(self):
-        """
-        Procesa la producción:
-        - Descuenta material de origen del inventario
-        - Agrega material de destino al inventario
-        - Cambia el estado a 'done'
-        """
+        """Procesa la producción con movimientos visualmente correctos"""
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_('Solo se puede procesar una producción en borrador.'))
+        
         if not self.creator_ids:
             raise UserError(_('Debe añadir al menos un creador.'))
-        if self.quantity <= 0:
-            raise UserError(_('La cantidad debe ser positiva.'))
-
-        # Crear movimiento de salida del material de origen
-        self._create_stock_move(
-            product=self.product_from_id,
-            quantity=self.quantity,
-            move_type='out',
-            source_location=self.source_location_id,
-            dest_location=self.env.ref('stock.stock_location_inventory') if self.env.ref('stock.stock_location_inventory', raise_if_not_found=False) else self.source_location_id,
-            partner=self.partner_id
-        )
-
-        # Crear movimiento de entrada del material de destino
-        self._create_stock_move(
-            product=self.product_to_id,
-            quantity=self.quantity,
-            move_type='in',
-            source_location=self.env.ref('stock.stock_location_inventory') if self.env.ref('stock.stock_location_inventory', raise_if_not_found=False) else self.dest_location_id,
-            dest_location=self.dest_location_id,
-            partner=self.partner_id
-        )
-
-        # Descontar material de origen
-        self.env['stock.quant']._update_available_quantity(
+        
+        # Verificar stock disponible
+        real_qty = self.env['stock.quant']._get_available_quantity(
             self.product_from_id,
             self.source_location_id,
-            -self.quantity,  # Negativo para descontar
+            allow_negative=True  # Permitir stock negativo
         )
 
-        # Agregar material de destino
-        self.env['stock.quant']._update_available_quantity(
-            self.product_to_id,
-            self.dest_location_id,
-            self.quantity,  # Positivo para agregar
-        )
+        if real_qty < self.quantity:
+            raise UserError(_(
+                'Stock insuficiente de %s. Disponible: %s, Requerido: %s',
+                self.product_from_id.name,
+                real_qty,
+                self.quantity
+            ))
 
+        print("...................................................")
+        print(real_qty)
+        
+        # Obtener ubicación virtual de producción
+        production_loc = self._get_production_location()
+        
+        # === MOVIMIENTO 1: Consumo (WH/Existencias -> WH/PLANTA/PRODUCCION) ===
+        # Este aparecerá en ROJO (salida)
+        self._create_production_move(
+            product=self.product_from_id,
+            quantity=self.quantity,
+            source_location=self.source_location_id,
+            dest_location=production_loc,  # Ubicación virtual
+            move_type='out'
+        )
+        
+        # === MOVIMIENTO 2: Producción (WH/PLANTA/PRODUCCION -> WH/Existencias) ===
+        # Este aparecerá en VERDE (entrada)
+        self._create_production_move(
+            product=self.product_to_id,
+            quantity=self.quantity,
+            source_location=production_loc,  # Ubicación virtual
+            dest_location=self.dest_location_id,
+            move_type='in'
+        )
+        
         self.write({
             'state': 'done',
-            'date': self.date or fields.Datetime.now(),
+            'date': fields.Datetime.now()
         })
 
     def action_set_paid(self):
@@ -164,67 +183,67 @@ class PlantaProduction(models.Model):
             raise UserError(_('Solo se puede cancelar una producción en borrador o procesada.'))
         self.state = 'cancel'
 
-    def _create_stock_move(self, product, quantity, move_type, source_location, dest_location, partner=None):
+
+    def _create_production_move(self, product, quantity, source_location, dest_location, move_type):
         """
-        Crea un movimiento de stock para consumo o producción.
-        
-        Args:
-            product: product.product record
-            quantity: Cantidad a mover
-            move_type: 'out' (consumo) o 'in' (producción)
-            source_location: stock.location record
-            dest_location: stock.location record
-            partner: res.partner record (opcional) - Contacto asociado
+        Crea un movimiento de stock para producción con colores correctos
         """
         self.ensure_one()
         
-        picking_type = self.env.ref('stock.picking_type_internal')
+        # Determinar tipo de operación
+        if move_type == 'out':
+            picking_type = self.env.ref('stock.picking_type_out')
+            operation_name = 'Consumo'
+        else:
+            picking_type = self.env.ref('stock.picking_type_in')
+            operation_name = 'Producción'
         
-        # Crear el picking (traslado interno)
+        # Valores base del movimiento
+        move_vals = {
+            'name': f'{operation_name}: {product.name}',
+            'product_id': product.id,
+            'product_uom_qty': quantity,
+            'product_uom': product.uom_id.id,
+            'location_id': source_location.id,
+            'location_dest_id': dest_location.id,
+        }
+        
+        # Crear picking
         picking_vals = {
             'origin': f'Producción {self.name}',
+            'partner_id':self.partner_id.id,
             'picking_type_id': picking_type.id,
             'location_id': source_location.id,
             'location_dest_id': dest_location.id,
-            'partner_id': partner.id if partner else False,  # Agregar contacto
-            'move_ids': [(0, 0, {
-                'name': f'Producción {self.name} - {product.name}',
-                'product_id': product.id,
-                'product_uom_qty': quantity,
-                'product_uom': product.uom_id.id,
-                'location_id': source_location.id,
-                'location_dest_id': dest_location.id,
-                'partner_id': partner.id if partner else False,  # También en el move
-            })],
+            'move_ids': [(0, 0, move_vals)],
         }
-        picking = self.env['stock.picking'].create(picking_vals)
         
-        # Confirmar y asignar
+        if self.partner_id:
+            picking_vals['partner_id'] = self.partner_id.id
+        
+        picking = self.env['stock.picking'].create(picking_vals)
         picking.action_confirm()
         picking.action_assign()
         
-        # Establecer cantidades
+        # Procesar líneas de movimiento
         for move in picking.move_ids:
-            # Asegurar que el partner también esté en los move_lines si es necesario
-            if move.move_line_ids:
-                for move_line in move.move_line_ids:
-                    if move_line.quantity == 0:
-                        move_line.quantity = move.product_uom_qty
-                    # Opcional: también agregar partner a las líneas de movimiento
-                    if partner and not move_line.partner_id:
-                        move_line.partner_id = partner.id
-            else:
+            # Crear o actualizar líneas de movimiento
+            if not move.move_line_ids:
+                # Crear nueva línea de movimiento
                 move_line_vals = {
                     'product_id': move.product_id.id,
                     'quantity': move.product_uom_qty,
                     'location_id': move.location_id.id,
                     'location_dest_id': move.location_dest_id.id,
                 }
-                if partner:
-                    move_line_vals['partner_id'] = partner.id
                 move.move_line_ids = [(0, 0, move_line_vals)]
+            else:
+                # Actualizar líneas existentes
+                for move_line in move.move_line_ids:
+                    if move_line.quantity == 0:
+                        move_line.quantity = move.product_uom_qty
         
-        # Validar
+        # Validar el picking
         picking.button_validate()
         
         return picking

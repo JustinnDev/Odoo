@@ -22,7 +22,7 @@ añadiir resumen simplificado en nota de despacho (sin tipos)
 
 Modulo Planta
 Pacas (Listo) (hacer varias acciones desde el list)
-Produccion (Listo) (hacer que el movimiento de inventario no use la funcion _update_available_quantity())
+Produccion (Listo) (hacer que el movimiento de inventario no use la funcion _update_available_quantity()) se pudiera usar actualizar cantidad directamente 
 
 ------------------------------------------------------
 
