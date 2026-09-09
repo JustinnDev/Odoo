@@ -116,24 +116,25 @@ class PlantaProduction(models.Model):
         if not self.creator_ids:
             raise UserError(_('Debe añadir al menos un creador.'))
         
-        # Verificar stock disponible
-        real_qty = self.env['stock.quant']._get_available_quantity(
-            self.product_from_id,
-            self.source_location_id,
-            allow_negative=True  # Permitir stock negativo
-        )
+        # Calcular stock REAL disponible
+        quants = self.env['stock.quant'].search([
+            ('product_id', '=', self.product_from_id.id),
+            ('location_id', '=', self.source_location_id.id),
+        ])
+        available_qty = sum(quant.quantity for quant in quants)
+   
 
-        if real_qty < self.quantity:
+        if available_qty < self.quantity:
             raise UserError(_(
                 'Stock insuficiente de %s. Disponible: %s, Requerido: %s',
                 self.product_from_id.name,
-                real_qty,
+                available_qty,
                 self.quantity
             ))
 
-        print("...................................................")
-        print(real_qty)
-        
+        print("-------------------------------------------")
+        print(available_qty)
+
         # Obtener ubicación virtual de producción
         production_loc = self._get_production_location()
         
