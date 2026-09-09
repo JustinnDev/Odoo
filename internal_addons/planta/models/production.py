@@ -187,51 +187,44 @@ class PlantaProduction(models.Model):
     def _create_production_move(self, product, quantity, source_location, dest_location, move_type):
         """
         Crea un movimiento de stock para producción con colores correctos
+        
+        Args:
+            move_type: 'out' (consumo - rojo) o 'in' (producción - verde)
         """
         self.ensure_one()
         
-        # Determinar tipo de operación
+        # Determinar el tipo de picking según sea salida o entrada
         if move_type == 'out':
-            picking_type = self.env.ref('stock.picking_type_out')
+            picking_type = self.env.ref('stock.picking_type_out')  # Salida (rojo)
             operation_name = 'Consumo'
         else:
-            picking_type = self.env.ref('stock.picking_type_in')
+            picking_type = self.env.ref('stock.picking_type_in')   # Entrada (verde)
             operation_name = 'Producción'
         
-        # Valores base del movimiento
-        move_vals = {
-            'name': f'{operation_name}: {product.name}',
-            'product_id': product.id,
-            'product_uom_qty': quantity,
-            'product_uom': product.uom_id.id,
-            'location_id': source_location.id,
-            'location_dest_id': dest_location.id,
-        }
-        
-        # Crear picking
+        # Crear el picking
         picking_vals = {
             'origin': f'Producción {self.name}',
-            'partner_id':self.partner_id.id,
             'picking_type_id': picking_type.id,
             'location_id': source_location.id,
             'location_dest_id': dest_location.id,
-            'move_ids': [(0, 0, move_vals)],
+            'partner_id': self.partner_id.id if self.partner_id else False,
+            'move_ids': [(0, 0, {
+                'name': f'{operation_name}: {product.name}',
+                'product_id': product.id,
+                'product_uom_qty': quantity,
+                'product_uom': product.uom_id.id,
+                'location_id': source_location.id,
+                'location_dest_id': dest_location.id,
+                'partner_id': self.partner_id.id if self.partner_id else False,
+            })],
         }
-        
-        if self.partner_id:
-            picking_vals['partner_id'] = self.partner_id.id
         
         picking = self.env['stock.picking'].create(picking_vals)
         picking.action_confirm()
         picking.action_assign()
         
-        # Procesar líneas de movimiento
+        # Configurar cantidades
         for move in picking.move_ids:
-            # Crear o actualizar líneas de movimiento
-            if not move.move_line_ids:
-                # Crear nueva línea de movimiento
-
-            # Asegurar que el partner también esté en los move_lines si es necesario
             if move.move_line_ids:
                 for move_line in move.move_line_ids:
                     if move_line.quantity == 0:
@@ -244,11 +237,6 @@ class PlantaProduction(models.Model):
                     'location_dest_id': move.location_dest_id.id,
                 }
                 move.move_line_ids = [(0, 0, move_line_vals)]
-            else:
-                # Actualizar líneas existentes
-                for move_line in move.move_line_ids:
-                    if move_line.quantity == 0:
-                        move_line.quantity = move.product_uom_qty
         
         # Validar el picking
         picking.button_validate()
