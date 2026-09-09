@@ -210,9 +210,6 @@ class PlantaProduction(models.Model):
                 for move_line in move.move_line_ids:
                     if move_line.quantity == 0:
                         move_line.quantity = move.product_uom_qty
-                    # Opcional: también agregar partner a las líneas de movimiento
-                    if partner and not move_line.partner_id:
-                        move_line.partner_id = partner.id
             else:
                 move_line_vals = {
                     'product_id': move.product_id.id,
