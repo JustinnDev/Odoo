@@ -132,9 +132,6 @@ class PlantaProduction(models.Model):
                 self.quantity
             ))
 
-        print("-------------------------------------------")
-        print(available_qty)
-
         # Obtener ubicación virtual de producción
         production_loc = self._get_production_location()
         

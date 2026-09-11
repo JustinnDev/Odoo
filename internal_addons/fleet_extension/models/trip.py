@@ -39,13 +39,13 @@ class FleetExtensionTrip(models.Model):
         required=True,
     )
     start_date = fields.Datetime(
-        string='Fecha de Salida',
+        string='Salida',
     )
     destination_date = fields.Datetime(
-        string='Fecha de Llegada a Destino',
+        string='Destino',
     )
     arrival_date = fields.Datetime(
-        string='Fecha de Regreso',
+        string='Regreso',
     )
     initial_fuel = fields.Float(
         string='Combustible Inicial',
@@ -57,7 +57,7 @@ class FleetExtensionTrip(models.Model):
         digits='Product Unit of Measure',
     )
     fuel_consumption = fields.Float(
-        string='Consumo de Combustible',
+        string='Consumo',
         compute='_compute_fuel_consumption',
         store=True,
         digits='Product Unit of Measure',

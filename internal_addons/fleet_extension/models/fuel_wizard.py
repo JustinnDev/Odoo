@@ -42,9 +42,9 @@ class FleetExtensionFuelWizard(models.TransientModel):
     )
 
     inventory_consumption = fields.Boolean(
-        string='Consumo de Inventario',
+        string='Afecta el Inventario',
         default=True,
-        help = 'Indica si la operacion afectara la producto de inventario'               
+        help = 'Indica si la operacion afectara el producto del inventario'               
     )
 
     vendor_id = fields.Many2one(

@@ -1,7 +1,9 @@
 Modulo General
 
 hacer notificaciones push
-hacer que imprima 
+hacer que imprima *
+hacer que te de un aviso cuando un material que lleva descuento no lo lleva en la nota de recepcion (posiblemente hacerlo con etiquetas en los productos como lo maneja odoo)
+
 
 Ocultar subtotal del resumen (listo Recepcion y Entrega)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)

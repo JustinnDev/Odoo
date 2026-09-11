@@ -116,6 +116,7 @@
                             <field name="purchase_order_id" readonly="1"/>
                             <field name="stock_picking_id" readonly="1"/>
                             <field name="line_count" readonly="1"/>
+                            <field name="subtotal_kg" readonly="1"/>
                             <field name="total_kg" readonly="1"/>
                             <field name="total_amount" readonly="1" widget="monetary"/>
                         </group>

@@ -22,7 +22,7 @@ class ReceptionNote(models.Model):
 
     supplier_ref = fields.Char(
         string='Referencia',
-        help='Placa del vehículo, número de guía, etc.'
+        help='vehículo, número de guía, etc.'
     )
 
     entry_time = fields.Datetime(
@@ -63,6 +63,12 @@ class ReceptionNote(models.Model):
         'reception.note.summary',
         'note_id',
         string='Resumen por Material'
+    )
+
+    subtotal_kg = fields.Float(
+        string='SubTotal kg',
+        compute='_compute_totals',
+        store=True
     )
 
     total_kg = fields.Float(
@@ -109,6 +115,7 @@ class ReceptionNote(models.Model):
         for note in self:
             note.total_kg = sum(line.total_kg for line in note.summary_ids)
             note.total_amount = sum(line.amount for line in note.summary_ids)
+            note.subtotal_kg = sum(line.subtotal_kg for line in note.summary_ids)
 
     @api.depends('line_ids')
     def _compute_line_count(self):
