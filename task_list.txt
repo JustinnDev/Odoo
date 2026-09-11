@@ -1,5 +1,6 @@
 Modulo General
 
+hacer notificaciones push
 hacer que imprima 
 
 Ocultar subtotal del resumen (listo Recepcion y Entrega)
@@ -22,13 +23,14 @@ añadiir resumen simplificado en nota de despacho (sin tipos)
 
 Modulo Planta
 Pacas (Listo) (hacer varias acciones desde el list)
-Produccion (Listo) (hacer que el movimiento de inventario no use la funcion _update_available_quantity()) se pudiera usar actualizar cantidad directamente 
+Produccion (Listo)
 
 ------------------------------------------------------
 
 Modulo Flete
 
-Añadir fecha para repostaje
+Hacer un servicio de extraccion al extraer combustible 
+
 Hacer que un vehiculo solo tenga un viaje activo a la vez
 Crear programador de viajes
 Crear modelo para mantenimiento
@@ -36,6 +38,12 @@ Hacer que si no se va a condumir de inventario, de alguna manera se registre com
 Afiliar el Tanque al vehiculo vanilla 
 Agregar multiples paradas
 Agregar multiples conductores
+
+
+Añadir fecha para repostaje (listo)
+Añadir responsable por defecto (listo)
+Añadir conductor al crear el servicio (listo)
+Hacer que los conductores en Trip solo sean empleados (No se puede hacer porque aveces personas que no son empleados manejan los camiones)
 
 
 

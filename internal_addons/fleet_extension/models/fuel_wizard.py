@@ -50,6 +50,12 @@ class FleetExtensionFuelWizard(models.TransientModel):
     vendor_id = fields.Many2one(
         'res.partner',
         string='Responsable',
+        default=lambda self: self._get_driver_id()
+    )
+
+    refuel_date = fields.Datetime(
+        string='Fecha de Respostaje',
+        default=fields.Datetime.now()
     )
 
     @api.depends('quantity', 'operation_type', 'current_fuel')
@@ -62,6 +68,13 @@ class FleetExtensionFuelWizard(models.TransientModel):
             else:
                 wizard.new_fuel_level = wizard.current_fuel
 
+    def _get_driver_id(self):
+        tank_id = self.env.context['default_tank_id']
+        if tank_id:
+            tank_id = self.env['fleet.extension.fuel_tank'].browse(tank_id)
+            return tank_id.vehicle_id.driver_id.id
+        return False
+
     def action_confirm(self):
         """Ejecuta la operación de combustible."""
         self.ensure_one()
@@ -69,7 +82,7 @@ class FleetExtensionFuelWizard(models.TransientModel):
             raise UserError(_('La cantidad debe ser positiva.'))
 
         if self.operation_type == 'refuel':
-            self.tank_id.refuel(self.product_id, self.quantity, self.inventory_consumption, self.vendor_id)
+            self.tank_id.refuel(self.product_id, self.quantity, self.inventory_consumption, self.refuel_date, self.vendor_id)
         elif self.operation_type == 'consume':
             self.tank_id.consume(self.quantity)
         elif self.operation_type == 'extract':

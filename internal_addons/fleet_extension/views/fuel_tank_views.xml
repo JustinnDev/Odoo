@@ -69,6 +69,7 @@
                         <field name="quantity" required="1"/>
                         <field name="inventory_consumption" invisible="operation_type == 'consume'"/>
                         <field name="vendor_id" invisible="operation_type != 'refuel'"/>
+                        <field name="refuel_date" invisible="operation_type != 'refuel'"/>
                         <field name="current_fuel" readonly="1"/>
                         <field name="new_fuel_level" readonly="1"/>
                     </group>

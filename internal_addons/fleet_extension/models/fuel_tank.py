@@ -70,6 +70,7 @@ class FleetExtensionFuelTank(models.Model):
                 'default_operation_type': 'refuel',
                 'default_product_id': self.product_id.id,
                 'default_source_location_id': self.consume_location_id.id,
+                'default_tank_id':self.id,
             },
         }
 
@@ -103,7 +104,7 @@ class FleetExtensionFuelTank(models.Model):
             },
         }
 
-    def refuel(self, product, quantity, inventory_consumption, vendor):
+    def refuel(self, product, quantity, inventory_consumption, refuel_date, vendor):
         """Aumenta el combustible del tanque consumiendo producto del inventario."""
         self.ensure_one()
         if quantity <= 0:
@@ -118,10 +119,11 @@ class FleetExtensionFuelTank(models.Model):
             vehicle=self.vehicle_id,
             description=f'{product.name}',
             service_type=self.service_type_id,
-            date=fields.Datetime.now(),
+            date=refuel_date,
             amount=quantity,
             notes=f'Repostaje automático desde tanque virtual',
             vendor_id=vendor,
+            purchaser_id=self.vehicle_id.driver_id
         )
 
         self.current_fuel += quantity
