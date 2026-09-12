@@ -8,7 +8,7 @@ hacer que te de un aviso cuando un material que lleva descuento no lo lleva en l
 Ocultar subtotal del resumen (listo Recepcion y Entrega)
 Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 Hacer un boton para enviar una pesada de note_rec a una note_dis
-Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min
+Hacer una funcionlidad parecida a google sheet donde selecciones las casillas especificas y te salgas sum, prom, cant,max, min (que sea un scritp global)
 
 añadir campo para foto de vehiculo nota de entrega/despacho 
 añadir campo para foto nota papel
