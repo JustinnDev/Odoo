@@ -63,6 +63,10 @@ class ReceptionNoteSummary(models.Model):
     required=False
 )
 
+    line_count = fields.Integer(
+        string='Pesadas'
+    )
+
     @api.depends('subtotal_kg', 'discount_percent')
     def _compute_discount_kg(self):
         for line in self:

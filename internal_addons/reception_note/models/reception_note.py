@@ -143,15 +143,17 @@ class ReceptionNote(models.Model):
 
         # Diccionario para acumular subtotales por producto + tipo
         group_data = {}
+
         for line in self.line_ids:
             if not line.product_id:
                 raise UserError(_('Todas las líneas de pesaje deben tener un producto asignado.'))
             
             # Clave compuesta por producto + tipo
             key = (line.product_id.id, line.type or '')
-            
+
             if key in group_data:
                 group_data[key]['subtotal_kg'] += line.net_weight
+                group_data[key]['line_count'] += 1
             else:
                 # Usar precio y descuento existentes si están disponibles
                 price = existing_prices.get(key, line.product_id.standard_price or 0.0)
@@ -159,6 +161,7 @@ class ReceptionNote(models.Model):
                 
                 group_data[key] = {
                     'product_id': line.product_id.id,
+                    'line_count': 1,
                     'type': line.type or '',
                     'subtotal_kg': line.net_weight,
                     'discount_percent': discount,
@@ -294,6 +297,7 @@ class ReceptionNote(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+    
     def action_set_received(self):
         """Marca la nota como recibida y registra la hora de salida."""
         self.ensure_one()

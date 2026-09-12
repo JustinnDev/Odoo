@@ -1,7 +1,7 @@
 Modulo General
 
 hacer notificaciones push
-hacer que imprima *
+hacer que imprima (listo)
 hacer que te de un aviso cuando un material que lleva descuento no lo lleva en la nota de recepcion (posiblemente hacerlo con etiquetas en los productos como lo maneja odoo)
 
 
