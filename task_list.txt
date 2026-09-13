@@ -17,8 +17,9 @@ añadiir resumen simplificado en nota de despacho (sin tipos)
 
 
 
-
-
+-----------------------------------------------------
+Modulo de Notificaciones 
+(ya se activo todas las funciones de manera nativa instalando la pwa)
 
 
 ------------------------------------------------------
