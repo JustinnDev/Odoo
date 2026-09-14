@@ -14,6 +14,7 @@
         'stock',
         'mail',
         'hr',
+        'list_stats',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -21,6 +22,7 @@
         'views/bale_views.xml',
         'views/production_views.xml',
         'views/menu_views.xml',
+        'views/list_stats_bindings.xml',
     ],
     'installable': True,
     'application': True,

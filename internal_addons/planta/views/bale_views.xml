@@ -11,7 +11,7 @@
                   decoration-danger="state == 'cancel'">
                 <field name="name"/>
                 <field name="material_type_id"/>
-                <field name="weight"/>
+                <field name="weight" sum="Peso Total"/>
                 <field name="payment_state" widget="badge"
                        decoration-warning="payment_state == 'unpaid'"
                        decoration-success="payment_state == 'paid'"/>

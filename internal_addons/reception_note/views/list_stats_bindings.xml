@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Este archivo va DENTRO del módulo reception_note.
+        Engancha el wizard genérico de list_stats al modelo PADRE
+        reception.note, cuya lista (menú "Recepciones") ya es una
+        vista independiente.
+
+        El 'context' con 'list_stats_fields' limita el análisis a
+        solo estos campos (en vez de TODOS los campos numéricos del
+        modelo). Ajusta esta lista a los que realmente te interesen.
+    -->
+
+    <record id="action_list_stats_wizard_reception_note" model="ir.actions.act_window">
+        <field name="name">Ver Estadísticas (Suma/Prom/Cant/Max/Min)</field>
+        <field name="res_model">list.stats.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_reception_note"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'list_stats_fields': ['subtotal_kg', 'total_kg', 'total_amount']}</field>
+    </record>
+
+</odoo>

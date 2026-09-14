@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ VISTA LISTA DE RESULTADOS (dentro del wizard) ============ -->
+    <record id="view_list_stats_wizard_line_tree" model="ir.ui.view">
+        <field name="name">list.stats.wizard.line.tree</field>
+        <field name="model">list.stats.wizard.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" import="0">
+                <field name="field_label" string="Campo"/>
+                <field name="count_value" string="Cantidad" sum="Cantidad"/>
+                <field name="sum_value" string="Suma" sum="Suma"/>
+                <field name="avg_value" string="Promedio"/>
+                <field name="min_value" string="Mínimo"/>
+                <field name="max_value" string="Máximo"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============ VISTA FORMULARIO DEL WIZARD (popup) ============ -->
+    <record id="view_list_stats_wizard_form" model="ir.ui.view">
+        <field name="name">list.stats.wizard.form</field>
+        <field name="model">list.stats.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Estadísticas de Selección">
+                <div class="alert alert-info" role="alert">
+                    <field name="record_count"/> registro(s) seleccionado(s)
+                    del modelo <field name="model_display_name"/>.
+                </div>
+                <field name="line_ids">
+                    <list create="0" edit="0" delete="0" import="0">
+                        <field name="field_label" string="Campo"/>
+                        <field name="count_value" string="Cantidad"/>
+                        <field name="sum_value" string="Suma"/>
+                        <field name="avg_value" string="Promedio"/>
+                        <field name="min_value" string="Mínimo"/>
+                        <field name="max_value" string="Máximo"/>
+                    </list>
+                </field>
+                <footer>
+                    <button string="Cerrar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============ ACCIÓN GENÉRICA (SIN BINDING) ============ -->
+    <!-- Este módulo NO decide a qué modelos de negocio se aplica.
+         Cada módulo consumidor (reception_note, u otro) crea su PROPIO
+         registro ir.actions.act_window apuntando a este mismo res_model
+         ('list.stats.wizard') pero con su propio binding_model_id.
+         Esta acción "action_list_stats_wizard" queda disponible como
+         referencia/plantilla y por si se quiere invocar manualmente. -->
+    <record id="action_list_stats_wizard" model="ir.actions.act_window">
+        <field name="name">Estadísticas de Selección</field>
+        <field name="res_model">list.stats.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Este archivo va DENTRO del módulo que contiene planta.bale
+        (el que tiene bale.py / bale_views.xml).
+        Engancha el wizard genérico de list_stats a la lista de Pacas,
+        que ya es una vista independiente (acción action_planta_bale).
+
+        El 'context' con 'list_stats_fields' limita el análisis a los
+        campos numéricos que realmente interesan de planta.bale.
+        Ajusta esta lista si quieres agregar/quitar campos.
+    -->
+
+    <record id="action_list_stats_wizard_planta_bale" model="ir.actions.act_window">
+        <field name="name">Ver Estadísticas (Suma/Prom/Cant/Max/Min)</field>
+        <field name="res_model">list.stats.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_planta_bale"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'list_stats_fields': ['weight', 'duration']}</field>
+    </record>
+
+</odoo>
