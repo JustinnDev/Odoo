@@ -14,9 +14,12 @@
         'security/ir.model.access.csv',
         'security/reception_note_security.xml',
         'data/ir_sequence.xml',
+        'views/reception_note_summary_tree_standalone.xml',
+        'views/reception_note_line_summary_actions.xml',
         'views/reception_note_views.xml',
         'views/menu_views.xml',
         'views/list_stats_bindings.xml',
+        'views/reception_note_line_summary_bindings.xml',
     ],
 
     'installable': True,

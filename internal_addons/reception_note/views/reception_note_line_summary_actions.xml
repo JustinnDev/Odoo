@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Este archivo va DENTRO del módulo reception_note.
+
+        Estas dos acciones abren reception.note.line / reception.note.summary
+        como LISTAS INDEPENDIENTES (no embebidas en el form), pero con un
+        domain que las filtra a SOLO la nota de recepción que tengas abierta
+        (usa 'active_id', que Odoo resuelve automáticamente al valor del
+        registro actual cuando el botón que las dispara vive dentro de ese
+        formulario).
+
+        Al ser listas independientes, el menú de Acciones (⚙️) SÍ muestra
+        el binding de list_stats — permitiendo seleccionar cualquier
+        combinación de filas (de distinto material, sin problema) y ver
+        Suma/Promedio/Cantidad/Máximo/Mínimo.
+    -->
+
+    <record id="action_reception_note_line_by_note" model="ir.actions.act_window">
+        <field name="name">Pesajes</field>
+        <field name="res_model">reception.note.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reception_note_line_tree"/>
+        <field name="domain">[('note_id', '=', active_id)]</field>
+        <field name="context">{'default_note_id': active_id}</field>
+    </record>
+
+    <record id="action_reception_note_summary_by_note" model="ir.actions.act_window">
+        <field name="name">Resumen por Material</field>
+        <field name="res_model">reception.note.summary</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_reception_note_summary_tree_standalone"/>
+        <field name="domain">[('note_id', '=', active_id)]</field>
+    </record>
+
+</odoo>

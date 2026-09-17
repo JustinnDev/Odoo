@@ -2,6 +2,7 @@ Modulo General
 
 Hacer una funcionlidad parecida a google sheet donde selecciones las casillas (ya sean de una lista o de las reception_note_summary/line) especificas y te salgas sum, prom, cant,max, min (que sea un scritp global, o sea un modelo que se pueda heredar o un script en js (Listo, sin nada de .js) (falta implementarlo en el list summary o pesaje de note_reception)
 
+
 hacer notificaciones push
 hacer que imprima (listo)
 hacer que te de un aviso cuando un material que lleva descuento no lo lleva en la nota de recepcion (posiblemente hacerlo con etiquetas en los productos como lo maneja odoo)

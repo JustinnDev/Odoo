@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Este archivo va DENTRO del módulo reception_note. -->
+
+    <record id="action_list_stats_wizard_reception_line" model="ir.actions.act_window">
+        <field name="name">Ver Estadísticas (Suma/Prom/Cant/Max/Min)</field>
+        <field name="res_model">list.stats.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_reception_note_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'list_stats_fields': ['gross_weight', 'tare_weight', 'net_weight']}</field>
+    </record>
+
+    <record id="action_list_stats_wizard_reception_summary" model="ir.actions.act_window">
+        <field name="name">Ver Estadísticas (Suma/Prom/Cant/Max/Min)</field>
+        <field name="res_model">list.stats.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_reception_note_summary"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'list_stats_fields': ['subtotal_kg', 'discount_kg', 'total_kg', 'price_unit', 'amount']}</field>
+    </record>
+
+</odoo>

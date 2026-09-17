@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Este archivo va DENTRO del módulo reception_note.
+
+        view_reception_note_summary_tree (la original) usa expresiones
+        con 'parent.state', que solo funcionan cuando la vista está
+        embebida dentro del formulario de reception.note. Esta es una
+        versión independiente (de solo lectura) para usar en la acción
+        'Resumen en Lista Completa', que abre reception.note.summary
+        como una lista standalone filtrada por nota.
+    -->
+    <record id="view_reception_note_summary_tree_standalone" model="ir.ui.view">
+        <field name="name">reception.note.summary.tree.standalone</field>
+        <field name="model">reception.note.summary</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="product_id" readonly="1"/>
+                <field name="line_count" readonly="1"/>
+                <field name="type" readonly="1"/>
+                <field name="discount_percent" readonly="1"/>
+                <field name="discount_kg" readonly="1"/>
+                <field name="total_kg" readonly="1"/>
+                <field name="price_unit" readonly="1"/>
+                <field name="amount" readonly="1"/>
+            </list>
+        </field>
+    </record>
+</odoo>
