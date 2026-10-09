@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- report/reception_note_report.xml -->
+<!-- report/reception_note_report_no_price.xml -->
 <odoo>
 
     <!-- ============================================================ -->
     <!-- ACCIÓN DE REPORTE                                            -->
     <!-- ============================================================ -->
-    <record id="action_report_reception_note" model="ir.actions.report">
-        <field name="name">Imprimir Sin Precio</field>
+    <record id="action_report_reception_note_no_price" model="ir.actions.report">
+        <field name="name">Imprimir Solo Peso</field>
         <field name="model">reception.note</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">reception_note.report_reception_note_document</field>
-        <field name="report_file">reception_note.report_reception_note_document</field>
+        <field name="report_name">reception_note.report_reception_note_document_no_price</field>
+        <field name="report_file">reception_note.report_reception_note_document_no_price</field>
         <field name="print_report_name">'Nota Recepcion - %s' % (object.name)</field>
         <field name="binding_model_id" ref="model_reception_note"/>
         <field name="binding_type">report</field>
@@ -20,7 +20,7 @@
     <!-- ============================================================ -->
     <!-- TEMPLATE                                                     -->
     <!-- ============================================================ -->
-    <template id="report_reception_note_document">
+    <template id="report_reception_note_document_no_price">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
@@ -35,7 +35,7 @@
                                     Nota de Recepción
                                 </h1>
                                 <p class="text-muted mb-0" style="font-size: 14px;">
-                                    Documento de control de pesaje y valorización
+                                    Documento de control de pesaje
                                 </p>
                             </div>
                             <div class="col-4 text-end">
@@ -94,12 +94,12 @@
                                 </div>
                             </div>
 
-                            <!-- Card: Resumen Económico -->
+                            <!-- Card: Resumen de Peso -->
                             <div class="col-6">
                                 <div class="border rounded h-100" style="border-color: #dee2e6 !important;">
                                     <div class="px-3 py-2" style="background-color: #F1EFF7; border-bottom: 1px solid #dee2e6;">
                                         <strong style="font-size: 12px; color: #71639E; letter-spacing: 0.5px;">
-                                            RESUMEN ECONÓMICO
+                                            RESUMEN
                                         </strong>
                                     </div>
                                     <div class="p-3">
@@ -111,18 +111,12 @@
                                                       style="background-color: #71639E; color: #fff; padding: 4px 10px; font-size: 11px;"/>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
-                                            <div class="col-6 text-muted" style="font-size: 12px;">Total Kg</div>
-                                            <div class="col-6 text-end" style="font-size: 13px;">
-                                                <strong><span t-field="doc.total_kg"/> kg</strong>
-                                            </div>
-                                        </div>
                                         <div class="mt-3 pt-2" style="border-top: 2px dashed #dee2e6;">
                                             <div class="row">
-                                                <div class="col-6 text-muted" style="font-size: 12px;">TOTAL A PAGAR</div>
+                                                <div class="col-6 text-muted" style="font-size: 12px;">TOTAL KG</div>
                                                 <div class="col-6 text-end">
                                                     <span style="font-size: 18px; font-weight: 700; color: #71639E;">
-                                                        <span t-field="doc.total_amount"/>
+                                                        <span t-field="doc.total_kg"/> kg
                                                     </span>
                                                 </div>
                                             </div>
@@ -152,47 +146,23 @@
                                     <td style="padding: 8px;">
                                         <strong><span t-field="line.product_id"/></strong>
                                     </td>
-                                    <td class="text-center" style="padding: 8px;">
-                                        <span t-field="line.type"
-                                              class="badge rounded-pill"
-                                              style="background-color: #F1EFF7; color: #71639E; border: 1px solid #71639E; font-size: 10px; padding: 3px 8px;"/>
-                                    </td>
-                                    <td class="text-center" style="padding: 8px;">
-                                        <span t-field="line.line_count"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.discount_percent"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.discount_kg"/>
-                                    </td>
                                     <td class="text-end" style="padding: 8px;">
                                         <strong><span t-field="line.total_kg"/></strong>
                                     </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.price_unit"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <strong><span t-field="line.amount"/></strong>
-                                    </td>
                                 </tr>
                                 <tr t-if="not doc.summary_ids">
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="2" class="text-center text-muted py-4">
                                         Sin resumen calculado.
                                     </td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr style="background-color: #F1EFF7; border-top: 2px solid #71639E;">
-                                    <th colspan="5" class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">
+                                    <th class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">
                                         TOTAL GENERAL
                                     </th>
                                     <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
                                         <span t-field="doc.total_kg"/>
-                                    </th>
-                                    <th style="padding: 10px;"></th>
-                                    <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
-                                        <span t-field="doc.total_amount"/>
                                     </th>
                                 </tr>
                             </tfoot>

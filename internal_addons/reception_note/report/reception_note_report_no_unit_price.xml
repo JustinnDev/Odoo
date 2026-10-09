@@ -5,12 +5,12 @@
     <!-- ============================================================ -->
     <!-- ACCIÓN DE REPORTE                                            -->
     <!-- ============================================================ -->
-    <record id="action_report_reception_note_simple" model="ir.actions.report">
-        <field name="name">Imprimir Simple</field>
+    <record id="action_report_reception_note_no_unit_price" model="ir.actions.report">
+        <field name="name">Imprimir Sin Precio</field>
         <field name="model">reception.note</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">reception_note.report_reception_note_document_simple</field>
-        <field name="report_file">reception_note.report_reception_note_document_simple</field>
+        <field name="report_name">reception_note.report_reception_note_document_no_unit_price</field>
+        <field name="report_file">reception_note.report_reception_note_document_no_unit_price</field>
         <field name="print_report_name">'Nota Recepcion - %s' % (object.name)</field>
         <field name="binding_model_id" ref="model_reception_note"/>
         <field name="binding_type">report</field>
@@ -20,7 +20,7 @@
     <!-- ============================================================ -->
     <!-- TEMPLATE                                                     -->
     <!-- ============================================================ -->
-    <template id="report_reception_note_document_simple">
+    <template id="report_reception_note_document_no_unit_price">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
@@ -144,7 +144,6 @@
                                     <tr style="background-color: #71639E;">
                                         <th class="text-start" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Producto</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Total Kg</th>
-                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Precio Unit.</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Importe</th>
                                     </tr>
                                 </thead>
@@ -158,14 +157,11 @@
                                         <strong><span t-field="line.total_kg"/></strong>
                                     </td>
                                     <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.price_unit"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <strong><span t-field="line.amount"/></strong>
+                                        <strong></strong>
                                     </td>
                                 </tr>
                                 <tr t-if="not doc.summary_ids">
-                                    <td colspan="4" class="text-center text-muted py-4">
+                                    <td colspan="3" class="text-center text-muted py-4">
                                         Sin resumen calculado.
                                     </td>
                                 </tr>
@@ -178,7 +174,6 @@
                                     <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
                                         <span t-field="doc.total_kg"/>
                                     </th>
-                                    <th style="padding: 10px;"></th>
                                     <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
                                         <span t-field="doc.total_amount"/>
                                     </th>
