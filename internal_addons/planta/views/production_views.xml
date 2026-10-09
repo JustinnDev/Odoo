@@ -15,6 +15,7 @@
                 <field name="product_to_id"/>
                 <field name="quantity"/>
                 <field name="date"/>
+                <field name="creator_ids" widget="many2many_tags" optional="hide"/>
                 <field name="state" widget="badge" 
                        decoration-info="state == 'draft'"
                        decoration-success="state == 'done'"

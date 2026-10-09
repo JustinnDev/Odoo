@@ -41,10 +41,10 @@
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="product_id" required="1" readonly="1"/>
-                <field name="line_count" readonly="1"/>
-                <field name="type" readonly="1"/>
-                <field name="discount_percent" readonly="parent.state not in ['draft']"/>
-                <field name="discount_kg" readonly="1"/>
+                <field name="line_count" readonly="1" optional="hide"/>
+                <field name="type" readonly="1" optional="hide"/>
+                <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
+                <field name="discount_kg" readonly="1" optional="hide" />
                 <field name="total_kg" readonly="1"/>
                 <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                 <field name="amount" readonly="1"/>
@@ -60,10 +60,10 @@
             <form>
                 <group>
                     <field name="product_id" readonly="1"/>
-                    <field name="line_count" readonly="1"/>
-                    <field name="type" readonly="1"/>
-                    <field name="discount_percent" readonly="parent.state not in ['draft']"/>
-                    <field name="discount_kg" readonly="1"/>
+                    <field name="line_count" readonly="1" optional="hide"/>
+                    <field name="type" readonly="1" optional="hide"/>
+                    <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
+                    <field name="discount_kg" readonly="1" optional="hide"/>
                     <field name="total_kg" readonly="1"/>
                     <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                     <field name="amount" readonly="1"/>
@@ -153,10 +153,10 @@
                                    readonly="state == 'purchase_created'">
                                 <list editable="bottom">
                                     <field name="product_id" required="1" readonly="1"/>
-                                    <field name="line_count" readonly="1"/>
-                                    <field name="type" readonly="1"/>
-                                    <field name="discount_percent" readonly="parent.state not in ['draft']"/>
-                                    <field name="discount_kg" readonly="1"/>
+                                    <field name="line_count" readonly="1" optional="hide"/>
+                                    <field name="type" readonly="1" optional="hide"/>
+                                    <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
+                                    <field name="discount_kg" readonly="1" optional="hide"/>
                                     <field name="total_kg" readonly="1"/>
                                     <field name="price_unit" readonly="parent.state not in ['draft', 'received']"/>
                                     <field name="amount" readonly="1"/>

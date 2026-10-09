@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- report/reception_note_report.xml -->
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- ACCIÓN DE REPORTE                                            -->
+    <!-- ============================================================ -->
+    <record id="action_report_reception_note" model="ir.actions.report">
+        <field name="name">Imprimir Corto</field>
+        <field name="model">reception.note</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">reception_note.report_reception_note_document</field>
+        <field name="report_file">reception_note.report_reception_note_document</field>
+        <field name="print_report_name">'Nota Recepcion - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_reception_note"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- TEMPLATE                                                     -->
+    <!-- ============================================================ -->
+    <template id="report_reception_note_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- ============================================ -->
+                        <!-- ENCABEZADO / TÍTULO                          -->
+                        <!-- ============================================ -->
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <h1 class="mb-0" style="font-weight: 600; color: #212529;">
+                                    Nota de Recepción
+                                </h1>
+                                <p class="text-muted mb-0" style="font-size: 14px;">
+                                    Documento de control de pesaje y valorización
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="border rounded p-2" style="background-color: #F1EFF7; border-color: #71639E !important;">
+                                    <div class="text-muted" style="font-size: 11px;">
+                                        Nº DOCUMENTO
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #71639E;">
+                                        <span t-field="doc.name"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Línea decorativa -->
+                        <div class="mb-4" style="height: 3px; background: linear-gradient(90deg, #71639E 0%, #A99CC4 100%); border-radius: 2px;"></div>
+
+                        <!-- ============================================ -->
+                        <!-- INFORMACIÓN GENERAL EN TARJETAS              -->
+                        <!-- ============================================ -->
+                        <div class="row mb-4">
+                            <!-- Card: Datos del Proveedor -->
+                            <div class="col-6">
+                                <div class="border rounded h-100" style="border-color: #dee2e6 !important;">
+                                    <div class="px-3 py-2" style="background-color: #F1EFF7; border-bottom: 1px solid #dee2e6;">
+                                        <strong style="font-size: 12px; color: #71639E; letter-spacing: 0.5px;">
+                                            DATOS DEL PROVEEDOR
+                                        </strong>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-muted" style="font-size: 12px;">Proveedor</div>
+                                            <div class="col-7" style="font-size: 13px;">
+                                                <strong><span t-field="doc.partner_id"/></strong>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-muted" style="font-size: 12px;">Ref. Proveedor</div>
+                                            <div class="col-7" style="font-size: 13px;">
+                                                <span t-field="doc.supplier_ref"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5 text-muted" style="font-size: 12px;">Entrada</div>
+                                            <div class="col-7" style="font-size: 13px;">
+                                                <span t-field="doc.entry_time"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-5 text-muted" style="font-size: 12px;">Salida</div>
+                                            <div class="col-7" style="font-size: 13px;">
+                                                <span t-field="doc.exit_time"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card: Resumen Económico -->
+                            <div class="col-6">
+                                <div class="border rounded h-100" style="border-color: #dee2e6 !important;">
+                                    <div class="px-3 py-2" style="background-color: #F1EFF7; border-bottom: 1px solid #dee2e6;">
+                                        <strong style="font-size: 12px; color: #71639E; letter-spacing: 0.5px;">
+                                            RESUMEN ECONÓMICO
+                                        </strong>
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="row mb-2">
+                                            <div class="col-6 text-muted" style="font-size: 12px;">Estado</div>
+                                            <div class="col-6 text-end">
+                                                <span t-field="doc.state"
+                                                      class="badge rounded-pill"
+                                                      style="background-color: #71639E; color: #fff; padding: 4px 10px; font-size: 11px;"/>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6 text-muted" style="font-size: 12px;">Total Kg</div>
+                                            <div class="col-6 text-end" style="font-size: 13px;">
+                                                <strong><span t-field="doc.total_kg"/> kg</strong>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 pt-2" style="border-top: 2px dashed #dee2e6;">
+                                            <div class="row">
+                                                <div class="col-6 text-muted" style="font-size: 12px;">TOTAL A PAGAR</div>
+                                                <div class="col-6 text-end">
+                                                    <span style="font-size: 18px; font-weight: 700; color: #71639E;">
+                                                        <span t-field="doc.total_amount"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ============================================ -->
+                        <!-- TABLA DE RESUMEN POR MATERIAL                -->
+                        <!-- ============================================ -->
+                        <h4 class="mt-4 mb-2" style="font-size: 15px; color: #71639E; font-weight: 600;">
+                            Resumen por Material
+                        </h4>
+
+                        <table class="table table-sm table-hover" style="font-size: 12px;">
+                                <thead>
+                                    <tr style="background-color: #71639E;">
+                                        <th class="text-start" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Producto</th>
+                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Total Kg</th>
+                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Precio Unit.</th>
+                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Importe</th>
+                                    </tr>
+                                </thead>
+                            <tbody>
+                                <tr t-foreach="doc.summary_ids" t-as="line"
+                                    t-att-style="'background-color: ' + ('#ffffff' if line_index % 2 == 0 else '#F8F6FB') + ';'">
+                                    <td style="padding: 8px;">
+                                        <strong><span t-field="line.product_id"/></strong>
+                                    </td>
+                                    <td class="text-center" style="padding: 8px;">
+                                        <span t-field="line.type"
+                                              class="badge rounded-pill"
+                                              style="background-color: #F1EFF7; color: #71639E; border: 1px solid #71639E; font-size: 10px; padding: 3px 8px;"/>
+                                    </td>
+                                    <td class="text-center" style="padding: 8px;">
+                                        <span t-field="line.line_count"/>
+                                    </td>
+                                    <td class="text-end" style="padding: 8px;">
+                                        <strong><span t-field="line.total_kg"/></strong>
+                                    </td>
+                                    <td class="text-end" style="padding: 8px;">
+                                        <span t-field="line.price_unit"/>
+                                    </td>
+                                    <td class="text-end" style="padding: 8px;">
+                                        <strong><span t-field="line.amount"/></strong>
+                                    </td>
+                                </tr>
+                                <tr t-if="not doc.summary_ids">
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        Sin resumen calculado.
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="background-color: #F1EFF7; border-top: 2px solid #71639E;">
+                                    <th colspan="5" class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">
+                                        TOTAL GENERAL
+                                    </th>
+                                    <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
+                                        <span t-field="doc.total_kg"/>
+                                    </th>
+                                    <th style="padding: 10px;"></th>
+                                    <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
+                                        <span t-field="doc.total_amount"/>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- ============================================ -->
+                        <!-- FIRMAS                                       -->
+                        <!-- ============================================ -->
+                        <div class="row mt-5 pt-4">
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #71639E; width: 80%; margin: 0 auto; padding-top: 6px;">
+                                    <strong style="font-size: 12px; color: #71639E;">Recibió</strong><br/>
+                                    <span class="text-muted" style="font-size: 11px;">Nombre y firma</span>
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div style="border-top: 1px solid #71639E; width: 80%; margin: 0 auto; padding-top: 6px;">
+                                    <strong style="font-size: 12px; color: #71639E;">Autorizó</strong><br/>
+                                    <span class="text-muted" style="font-size: 11px;">Nombre y firma</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pie con aclaración -->
+                        <div class="text-center mt-5">
+                            <small class="text-muted" style="font-size: 10px;">
+                                Este documento es un comprobante interno de recepción.
+                                Generado automáticamente por el sistema.
+                            </small>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

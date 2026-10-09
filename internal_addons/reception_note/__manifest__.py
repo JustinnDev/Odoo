@@ -20,6 +20,9 @@
         'views/menu_views.xml',
         'views/list_stats_bindings.xml',
         'views/reception_note_line_summary_bindings.xml',
+        'report/reception_note_report.xml',
+        'report/reception_note_report_no_price.xml',
+        'report/reception_note_report_simple.xml'
     ],
 
     'installable': True,

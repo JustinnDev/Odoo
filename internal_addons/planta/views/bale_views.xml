@@ -23,6 +23,7 @@
                 <field name="start_date"/>
                 <field name="finish_date" optional="hide"/>
                 <field name="duration" optional="hide"/>
+                <field name="creator_ids" widget="many2many_tags" optional="hide"/>
             </list>
         </field>
     </record>
