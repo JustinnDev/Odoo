@@ -6,7 +6,7 @@
     <!-- ACCIÓN DE REPORTE                                            -->
     <!-- ============================================================ -->
     <record id="action_report_reception_note_simple" model="ir.actions.report">
-        <field name="name">Imprimir Simple</field>
+        <field name="name">Imprimir Normal</field>
         <field name="model">reception.note</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">reception_note.report_reception_note_document_simple</field>
