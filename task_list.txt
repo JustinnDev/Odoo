@@ -1,22 +1,20 @@
 Modulo General
 
-Hacer una funcionlidad parecida a google sheet donde selecciones las casillas (ya sean de una lista o de las reception_note_summary/line) especificas y te salgas sum, prom, cant,max, min (que sea un scritp global, o sea un modelo que se pueda heredar o un script en js (Listo, sin nada de .js) (falta implementarlo en el list summary o pesaje de note_reception)
-
-
-hacer notificaciones push
-hacer que imprima (listo)
-hacer que te de un aviso cuando un material que lleva descuento no lo lleva en la nota de recepcion (posiblemente hacerlo con etiquetas en los productos como lo maneja odoo)
-
-
-Ocultar subtotal del resumen (listo Recepcion y Entrega)
-Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
+Ocultar subtotal del resumen (listo Recepcion y Entrega) (ocultarlo sin eliminarlo, solo haciendo el option = "hide")
+Hacer que las notas de despacho coordinen las fechas con las ordenes de entrega 
+hacer notificaciones push 
 Hacer un boton para enviar una pesada de note_rec a una note_dis
-
 añadir campo para foto de vehiculo nota de entrega/despacho 
 añadir campo para foto nota papel
 añadiir resumen simplificado en nota de despacho (sin tipos)
+ocultar botones de la funcioanlidad google sheet ya que solo lo deberia ver el admin (o en su defecto el romanero)
 
 
+
+Hacer una funcionlidad parecida a google sheet donde selecciones las casillas (ya sean de una lista o de las reception_note_summary/line) especificas y te salgas sum, prom, cant,max, min (que sea un scritp global, o sea un modelo que se pueda heredar o un script en js (Listo, sin nada de .js)
+hacer que imprima (listo)
+hacer que te de un aviso cuando un material que lleva descuento no lo lleva en la nota de recepcion (posiblemente hacerlo con etiquetas en los productos como lo maneja odoo)
+Verificar que las fechas se coordinen entre nota-orden-inventario (Listo Recepcion)
 
 
 -----------------------------------------------------

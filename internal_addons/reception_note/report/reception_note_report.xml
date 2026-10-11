@@ -145,9 +145,9 @@
                                         <th class="text-start" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Producto</th>
                                         <th class="text-center" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Tipo</th>
                                         <th class="text-center" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Pesajes</th>
+                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">SubTotal Kg</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Desc. %</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Desc. Kg</th>
-                                        <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">SubTotal Kg</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Total Kg</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Precio Unit.</th>
                                         <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Importe</th>
@@ -168,13 +168,13 @@
                                         <span t-field="line.line_count"/>
                                     </td>
                                     <td class="text-end" style="padding: 8px;">
+                                        <strong><span t-field="line.subtotal_kg"/></strong>
+                                    </td>
+                                    <td class="text-end" style="padding: 8px;">
                                         <span t-field="line.discount_percent"/>
                                     </td>
                                     <td class="text-end" style="padding: 8px;">
                                         <span t-field="line.discount_kg"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <strong><span t-field="line.subtotal_kg"/></strong>
                                     </td>
                                     <td class="text-end" style="padding: 8px;">
                                         <strong><span t-field="line.total_kg"/></strong>

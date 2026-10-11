@@ -43,6 +43,7 @@
                 <field name="product_id" required="1" readonly="1"/>
                 <field name="line_count" readonly="1" optional="hide"/>
                 <field name="type" readonly="1" optional="hide"/>
+                <field name="subtotal_kg" readonly="1" optional="hide"/>
                 <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                 <field name="discount_kg" readonly="1" optional="hide" />
                 <field name="total_kg" readonly="1"/>
@@ -62,6 +63,7 @@
                     <field name="product_id" readonly="1"/>
                     <field name="line_count" readonly="1" optional="hide"/>
                     <field name="type" readonly="1" optional="hide"/>
+                    <field name="subtotal_kg" readonly="1" optional="hide"/>
                     <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                     <field name="discount_kg" readonly="1" optional="hide"/>
                     <field name="total_kg" readonly="1"/>
@@ -155,6 +157,7 @@
                                     <field name="product_id" required="1" readonly="1"/>
                                     <field name="line_count" readonly="1" optional="hide"/>
                                     <field name="type" readonly="1" optional="hide"/>
+                                    <field name="subtotal_kg" readonly="1" optional="hide"/>
                                     <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                                     <field name="discount_kg" readonly="1" optional="hide"/>
                                     <field name="total_kg" readonly="1"/>
