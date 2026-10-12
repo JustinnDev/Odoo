@@ -9,7 +9,7 @@
         y generar una orden de compra a partir de los totales.
     """,
     'author': 'Tu Empresa',
-    'depends': ['purchase', 'stock', 'list_stats'],  # stock para los productos, purchase para generar PO
+    'depends': ['purchase', 'stock', 'list_stats', 'mail'],  # stock para los productos, purchase para generar PO
     'data': [
         'security/ir.model.access.csv',
         'security/reception_note_security.xml',

@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 class ReceptionNote(models.Model):
     _name = 'reception.note'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Nota de Recepción'
     _order = 'entry_time desc, id desc'
 
