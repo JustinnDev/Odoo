@@ -57,18 +57,18 @@ class ReceptionNoteLine(models.Model):
             line.net_weight = line.gross_weight - line.tare_weight
 
 
-    def _post_summary_message(self, summaries, title):
-        """Publica en el chatter de la nota el detalle de los resúmenes afectados."""
-        for summary in summaries:
-            note = summary.note_id
+    def _post_line_message(self, lines, title):
+        """Publica en el chatter de la nota el detalle de las pesadas afectadas."""
+        for line in lines:
+            note = line.note_id
             if not note:
                 continue
-            body = Markup('<b>%s</b> - Material: %s - Desc. %%: %s - Total: %s - Precio Uni: %s') % (
+            body = Markup('<b>%s</b> - Material: %s - Bruto: %s - Tara: %s - Neto: %s') % (
                 Markup(title),
-                summary.product_id.display_name or _('(sin material)'),
-                summary.discount_percent,
-                summary.total_kg,
-                summary.price_unit,
+                line.product_id.display_name or _('(sin material)'),
+                line.gross_weight,
+                line.tare_weight,
+                line.net_weight,
             )
             note.message_post(body=body)
 
