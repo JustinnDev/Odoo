@@ -1,4 +1,12 @@
-from odoo import models, fields, api
+from markupsafe import Markup
+from odoo import models, fields, api, _
+
+TRACKED_FIELDS = {
+    'product_id': 'Material',
+    'type': 'Tipo',
+    'gross_weight': 'Peso Bruto',
+    'tare_weight': 'Tara',
+}
 
 class ReceptionNoteLine(models.Model):
     _name = 'reception.note.line'
@@ -49,25 +57,49 @@ class ReceptionNoteLine(models.Model):
             line.net_weight = line.gross_weight - line.tare_weight
 
 
+    def _post_summary_message(self, summaries, title):
+        """Publica en el chatter de la nota el detalle de los resúmenes afectados."""
+        for summary in summaries:
+            note = summary.note_id
+            if not note:
+                continue
+            body = Markup('<b>%s</b> - Material: %s - Desc. %%: %s - Total: %s - Precio Uni: %s') % (
+                Markup(title),
+                summary.product_id.display_name or _('(sin material)'),
+                summary.discount_percent,
+                summary.total_kg,
+                summary.price_unit,
+            )
+            note.message_post(body=body)
+
     @api.model_create_multi
     def create(self, vals_list):
         lines = super().create(vals_list)
+        if not self.env.context.get('reception_no_log'):
+            self._post_line_message(lines, _('Pesaje agregado'))
         # Forzar guardado del padre y recalcular resumen
         for line in lines:
             if line.note_id:
                 line.note_id.write({})
                 # Recalcular resumen automáticamente
                 if line.note_id.state == 'draft':
-                    line.note_id.action_compute_summary()
+                    line.note_id.with_context(reception_no_log=True).action_compute_summary()
         return lines
 
     def write(self, vals):
         result = super().write(vals)
+        if not self.env.context.get('reception_no_log'):
+            self._post_line_message(self, _('Pesaje modificado'))
         # Forzar guardado del padre y recalcular resumen
         for line in self:
             if line.note_id:
                 line.note_id.write({})
                 # Recalcular resumen automáticamente
                 if line.note_id.state == 'draft':
-                    line.note_id.action_compute_summary()
+                    line.note_id.with_context(reception_no_log=True).action_compute_summary()
         return result
+
+    def unlink(self):
+        if not self.env.context.get('reception_no_log'):
+            self._post_line_message(self, _('Pesaje eliminado'))
+        return super().unlink()

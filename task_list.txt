@@ -1,5 +1,11 @@
 Modulo General
 
+
+Hacer un modulo de lista de precios y se pueda usar en reception reception_note 
+Subir el sistema a una VPS con el dominio RecicladoraTitanium.com 
+
+
+
 Ocultar subtotal del resumen (listo Recepcion y Entrega) (ocultarlo sin eliminarlo, solo haciendo el option = "hide")
 Hacer que las notas de despacho coordinen las fechas con las ordenes de entrega 
 hacer notificaciones push 

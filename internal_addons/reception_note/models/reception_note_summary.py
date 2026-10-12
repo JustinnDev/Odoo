@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from markupsafe import Markup
+from odoo import models, fields, api, _
 import math
 
 class ReceptionNoteSummary(models.Model):
@@ -83,3 +84,36 @@ class ReceptionNoteSummary(models.Model):
     def _compute_amount(self):
         for line in self:
             line.amount = line.total_kg * line.price_unit
+
+    def _post_summary_message(self, summaries, title):
+        """Publica en el chatter de la nota el detalle de los resúmenes afectados."""
+        for summary in summaries:
+            note = summary.note_id
+            if not note:
+                continue
+            body = Markup('<b>%s</b> - Material: %s - Desc. %%: %s - Total: %s - Precio Uni: %s') % (
+                Markup(title),
+                summary.product_id.display_name or _('(sin material)'),
+                summary.discount_percent,
+                summary.total_kg,
+                summary.price_unit,
+            )
+            note.message_post(body=body)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        summaries = super().create(vals_list)
+        if not self.env.context.get('reception_no_log'):
+            self._post_summary_message(summaries, _('Resumen generado'))
+        return summaries
+
+    def write(self, vals):
+        result = super().write(vals)
+        if not self.env.context.get('reception_no_log'):
+            self._post_summary_message(self, _('Resumen modificado'))
+        return result
+
+    def unlink(self):
+        if not self.env.context.get('reception_no_log'):
+            self._post_summary_message(self, _('Resumen eliminado'))
+        return super().unlink()

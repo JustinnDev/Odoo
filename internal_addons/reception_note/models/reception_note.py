@@ -139,8 +139,8 @@ class ReceptionNote(models.Model):
                 existing_prices[key] = summary.price_unit
                 existing_discounts[key] = summary.discount_percent
 
-        # Eliminar resúmenes existentes
-        self.summary_ids.unlink()
+        # Eliminar resúmenes existentes (sin registrar en el chatter)
+        self.summary_ids.with_context(reception_no_log=True).unlink()
 
         # Diccionario para acumular subtotales por producto + tipo
         group_data = {}
@@ -173,7 +173,7 @@ class ReceptionNote(models.Model):
         summary_lines = []
         for data in group_data.values():
             summary_lines.append((0, 0, data))
-        self.write({'summary_ids': summary_lines})
+        self.with_context(reception_no_log=True).write({'summary_ids': summary_lines})
 
         return {
             'type': 'ir.actions.act_window',
