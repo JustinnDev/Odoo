@@ -1,6 +1,8 @@
 Modulo General
 
-
+Ocultar botones de lista resumen y pesaje
+Preguntar antes de confirmar compra en nota de recepcion 
+Ver como instalar un bloqueo pesimista en Odoo
 Hacer un modulo de lista de precios y se pueda usar en reception reception_note 
 Subir el sistema a una VPS con el dominio RecicladoraTitanium.com 
 

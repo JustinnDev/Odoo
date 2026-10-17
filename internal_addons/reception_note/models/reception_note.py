@@ -99,11 +99,65 @@ class ReceptionNote(models.Model):
     )
 
     stock_picking_id = fields.Many2one(
-    'stock.picking',
-    string='Movimiento de Inventario',
-    readonly=True,
-    copy=False
+        'stock.picking',
+        string='Movimiento de Inventario',
+        readonly=True,
+        copy=False
 )
+
+    def _get_price_list_selection(self):
+        line_model = self.env['reception.price.list.line']
+        result = []
+        for name in ['price_1', 'price_2', 'price_3', 'price_4', 'price_5', 'price_6']:
+            field = line_model._fields.get(name)
+            result.append((name, field.string if field else name))
+        return result
+
+    price_list_choice = fields.Selection(
+        selection=_get_price_list_selection,
+        force_save=True)
+
+    @api.onchange('price_list_choice')
+    def _onchange_price_list_choice(self):
+        if self.price_list_choice and self._origin.id:
+            self._origin.write({'price_list_choice': self.price_list_choice})
+
+    def action_update_prices_from_list(self):
+        """Actualiza el precio unitario del resumen con la lista de precios elegida."""
+        self.ensure_one()
+        choice = self.price_list_choice
+
+        print("-----------------------------------")
+        print(choice)
+        print("-----------------------------------")
+
+        if not choice:
+            raise UserError(_('Seleccione una lista de precios.'))
+        if not self.summary_ids:
+            raise UserError(_('Debe generar el resumen por material primero.'))
+
+        PriceLine = self.env['reception.price.list.line']
+        updated = 0
+        for summary in self.summary_ids:
+            price_line = PriceLine.search(
+                [('product_id', '=', summary.product_id.id)], limit=1)
+            if price_line:
+                summary.with_context(reception_no_log=True).write({
+                    'price_unit': price_line[choice],
+                })
+                updated += 1
+
+        self.message_post(body=_('Precios actualizados desde la lista: %s (%s materiales).') % (
+            dict(self._get_price_list_selection()).get(choice),
+            updated,
+        ))
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'reception.note',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
     
     @api.model
     def create(self, vals):

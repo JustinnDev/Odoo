@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_reception_price_list_line_list" model="ir.ui.view">
+        <field name="name">reception.price.list.line.list</field>
+        <field name="model">reception.price.list.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="product_id" readonly="1" force_save="1"/>
+                <field name="price_1"/>
+                <field name="price_2"/>
+                <field name="price_3"/>
+                <field name="price_4"/>
+                <field name="price_5"/>
+                <field name="price_6"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reception_price_list_line_form" model="ir.ui.view">
+        <field name="name">reception.price.list.line.form</field>
+        <field name="model">reception.price.list.line</field>
+        <field name="arch" type="xml">
+            <form edit="0" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="product_id" readonly="1"/>
+                        <field name="currency_id"/>
+                        <field name="price_1"/>
+                        <field name="price_2"/>
+                        <field name="price_3"/>
+                        <field name="price_4"/>
+                        <field name="price_5"/>
+                        <field name="price_6"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reception_price_list" model="ir.actions.act_window">
+        <field name="name">Lista de Precios</field>
+        <field name="res_model">reception.price.list.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_reception_price_list"
+              name="Lista de Precios"
+              parent="purchase.menu_purchase_root"
+              action="action_reception_price_list"
+              sequence="25"/>
+
+</odoo>

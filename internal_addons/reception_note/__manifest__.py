@@ -1,6 +1,6 @@
 {
     'name': 'Nota de Recepción',
-    'version': '1.0',
+    'version': '1.0.1',
     'category': 'Purchases',
     'summary': 'Registro de recepciones en patio con generación automática de órdenes de compra',
     'description': """
@@ -18,6 +18,7 @@
         'views/reception_note_line_summary_actions.xml',
         'views/reception_note_views.xml',
         'views/menu_views.xml',
+        'views/price_list_views.xml',
         'views/list_stats_bindings.xml',
         'views/reception_note_line_summary_bindings.xml',
         'report/reception_note_report.xml',
@@ -29,5 +30,7 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+
+    'post_init_hook': 'post_init_hook',
 
 }

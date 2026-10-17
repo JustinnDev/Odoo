@@ -102,6 +102,12 @@
                     <button name="%(action_reception_note_summary_by_note)d" type="action"
                             string="Resumen en Lista Completa" class="btn-secondary"
                             invisible="not summary_ids"/>
+                    <field name="price_list_choice"
+                           placeholder="Lista de Precios"
+                           invisible="state not in ['draft', 'received']"/>
+                    <button name="action_update_prices_from_list" type="object"
+                            string="Actualizar precios" class="btn-primary"
+                            invisible="state not in ['draft', 'received']"/>
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,received,purchase_created"
                         statusbar_colors='{"draft": "blue", "received": "warning", "purchase_created": "success", "cancel": "danger"}'/>
