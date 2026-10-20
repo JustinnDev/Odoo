@@ -7,12 +7,16 @@
         <field name="arch" type="xml">
             <list editable="bottom" create="0" delete="0">
                 <field name="product_id" readonly="1" force_save="1"/>
-                <field name="price_1"/>
-                <field name="price_2"/>
-                <field name="price_3"/>
-                <field name="price_4"/>
-                <field name="price_5"/>
-                <field name="price_6"/>
+                <field name="price_1" optional="hide"/>
+                <field name="price_2" optional="hide"/>
+                <field name="price_3" optional="hide"/>
+                <field name="price_4" optional="hide"/>
+                <field name="price_5" optional="hide"/>
+                <field name="price_6" optional="hide"/>
+                <field name="price_7" optional="hide"/>
+                <field name="price_8" optional="hide"/>
+                <field name="price_9" optional="hide"/>
+                <field name="price_10" optional="hide"/>
                 <field name="currency_id" column_invisible="1"/>
             </list>
         </field>
@@ -27,12 +31,16 @@
                     <group>
                         <field name="product_id" readonly="1"/>
                         <field name="currency_id"/>
-                        <field name="price_1"/>
-                        <field name="price_2"/>
-                        <field name="price_3"/>
-                        <field name="price_4"/>
-                        <field name="price_5"/>
-                        <field name="price_6"/>
+                        <field name="price_1" optional="hide"/>
+                        <field name="price_2" optional="hide"/>
+                        <field name="price_3" optional="hide"/>
+                        <field name="price_4" optional="hide"/>
+                        <field name="price_5" optional="hide"/>
+                        <field name="price_6" optional="hide"/>
+                        <field name="price_7" optional="hide"/>
+                        <field name="price_8" optional="hide"/>
+                        <field name="price_9" optional="hide"/>
+                        <field name="price_10" optional="hide"/>
                     </group>
                 </sheet>
             </form>
@@ -43,6 +51,7 @@
         <field name="name">Lista de Precios</field>
         <field name="res_model">reception.price.list.line</field>
         <field name="view_mode">list,form</field>
+        <field name="domain">[('product_id.sale_ok', '=', True)]</field>
     </record>
 
     <menuitem id="menu_reception_price_list"

@@ -108,7 +108,7 @@ class ReceptionNote(models.Model):
     def _get_price_list_selection(self):
         line_model = self.env['reception.price.list.line']
         result = []
-        for name in ['price_1', 'price_2', 'price_3', 'price_4', 'price_5', 'price_6']:
+        for name in ['price_1', 'price_2', 'price_3', 'price_4', 'price_5', 'price_6', 'price_7', 'price_8', 'price_9', 'price_10']:
             field = line_model._fields.get(name)
             result.append((name, field.string if field else name))
         return result
@@ -152,11 +152,8 @@ class ReceptionNote(models.Model):
             updated,
         ))
         return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'reception.note',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'current',
+            'type': 'ir.actions.client',
+            'tag': 'soft_reload',
         }
     
     @api.model

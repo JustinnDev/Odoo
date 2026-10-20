@@ -98,9 +98,12 @@
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['draft', 'received']"/>
                     <button name="%(action_reception_note_line_by_note)d" type="action"
-                            string="Pesajes en Lista Completa" class="btn-secondary"/>
+                            string="Lista Pesajes" class="btn-secondary"
+                            groups="base.group_system"/>
+
                     <button name="%(action_reception_note_summary_by_note)d" type="action"
-                            string="Resumen en Lista Completa" class="btn-secondary"
+                            string="Lista Resumen" class="btn-secondary"
+                            groups="base.group_system"
                             invisible="not summary_ids"/>
                     <field name="price_list_choice"
                            placeholder="Lista de Precios"
