@@ -94,14 +94,14 @@
                             string="Confirmar Compra" class="btn-primary"
                             invisible="state != 'received'"
                             groups="reception_note.group_generate_purchase_order"
-                            confirm="¿Está seguro de que desea generar la orden de compra?"/>
+                            confirm="¿Está seguro que desea generar el movimiento de inventario y la orden de compra?"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
-                            invisible="state not in ['draft', 'received']"/>
+                            invisible="state not in ['draft', 'received']"
+                            confirm="¿Quieres Cancelar la nota?"/>
                     <button name="%(action_reception_note_line_by_note)d" type="action"
                             string="Lista Pesajes" class="btn-secondary"
                             groups="base.group_system"/>
-
                     <button name="%(action_reception_note_summary_by_note)d" type="action"
                             string="Lista Resumen" class="btn-secondary"
                             groups="base.group_system"
