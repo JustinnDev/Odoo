@@ -93,7 +93,8 @@
                     <button name="action_generate_purchase_order" type="object"
                             string="Confirmar Compra" class="btn-primary"
                             invisible="state != 'received'"
-                            groups="reception_note.group_generate_purchase_order"/>
+                            groups="reception_note.group_generate_purchase_order"
+                            confirm="¿Está seguro de que desea generar la orden de compra?"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
                             invisible="state not in ['draft', 'received']"/>

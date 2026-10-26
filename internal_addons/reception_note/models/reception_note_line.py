@@ -100,6 +100,15 @@ class ReceptionNoteLine(models.Model):
         return result
 
     def unlink(self):
+        # Capturar las notas afectadas antes de eliminar las líneas
+        notes = self.mapped('note_id')
         if not self.env.context.get('reception_no_log'):
             self._post_line_message(self, _('Pesaje eliminado'))
-        return super().unlink()
+        result = super().unlink()
+        # Forzar guardado del padre y recalcular resumen de las notas afectadas
+        for note in notes:
+            note.write({})
+            # Recalcular resumen automáticamente si la nota está en borrador
+            if note.state == 'draft':
+                note.with_context(reception_no_log=True).action_compute_summary()
+        return result
