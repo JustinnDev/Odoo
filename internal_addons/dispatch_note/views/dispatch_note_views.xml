@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- ============ VISTAS PARA LAS LÍNEAS DE PESAJE ============ -->
-    <!-- Vista lista (tree) de líneas de pesaje - Editable directamente -->
     <record id="view_dispatch_note_line_tree" model="ir.ui.view">
         <field name="name">dispatch.note.line.tree</field>
         <field name="model">dispatch.note.line</field>
@@ -16,7 +15,6 @@
         </field>
     </record>
 
-    <!-- Vista formulario de líneas de pesaje (solo para edición avanzada) -->
     <record id="view_dispatch_note_line_form" model="ir.ui.view">
         <field name="name">dispatch.note.line.form</field>
         <field name="model">dispatch.note.line</field>
@@ -34,14 +32,15 @@
     </record>
 
     <!-- ============ VISTAS PARA EL RESUMEN POR MATERIAL ============ -->
-    <!-- Vista lista (tree) del resumen - Editable directamente -->
     <record id="view_dispatch_note_summary_tree" model="ir.ui.view">
         <field name="name">dispatch.note.summary.tree</field>
         <field name="model">dispatch.note.summary</field>
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="product_id" required="1" readonly="1"/>
+                <field name="line_count" readonly="1" optional="hide"/>
                 <field name="type" readonly="1" optional="hide"/>
+                <field name="subtotal_kg" readonly="1" optional="hide"/>
                 <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                 <field name="discount_kg" readonly="1" optional="hide"/>
                 <field name="total_kg" readonly="1"/>
@@ -51,7 +50,6 @@
         </field>
     </record>
 
-    <!-- Vista formulario del resumen (solo para edición avanzada) -->
     <record id="view_dispatch_note_summary_form" model="ir.ui.view">
         <field name="name">dispatch.note.summary.form</field>
         <field name="model">dispatch.note.summary</field>
@@ -59,7 +57,9 @@
             <form>
                 <group>
                     <field name="product_id" readonly="1"/>
+                    <field name="line_count" readonly="1" optional="hide"/>
                     <field name="type" readonly="1" optional="hide"/>
+                    <field name="subtotal_kg" readonly="1" optional="hide"/>
                     <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                     <field name="discount_kg" readonly="1" optional="hide"/>
                     <field name="total_kg" readonly="1"/>
@@ -88,10 +88,12 @@
                             invisible="state != 'processed'"/>
                     <button name="action_generate_sale_order" type="object"
                             string="Confirmar Venta" class="btn-primary"
-                            invisible="state != 'processed'"/>
+                            invisible="state != 'processed'"
+                            confirm="¿Está seguro que desea generar la orden de venta?"/>
                     <button name="action_cancel" type="object"
                             string="Cancelar" class="btn-secondary"
-                            invisible="state not in ['draft', 'processed']"/>
+                            invisible="state not in ['draft', 'processed']"
+                            confirm="¿Quieres Cancelar la nota?"/>
                     <field name="state" widget="statusbar"
                         statusbar_visible="draft,processed,sale_created"
                         statusbar_colors='{"draft": "blue", "processed": "warning", "sale_created": "success", "cancel": "danger"}'/>
@@ -102,8 +104,7 @@
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
-                    
-                    <!-- Grupo principal -->
+
                     <group>
                         <group>
                             <field name="partner_id" options="{'no_create': True}"
@@ -116,6 +117,7 @@
                         <group>
                             <field name="sale_order_id" readonly="1"/>
                             <field name="line_count" readonly="1"/>
+                            <field name="subtotal_kg" readonly="1"/>
                             <field name="total_kg" readonly="1"/>
                             <field name="total_amount" readonly="1" widget="monetary"/>
                         </group>
@@ -145,7 +147,9 @@
                                    readonly="state == 'sale_created'">
                                 <list editable="bottom">
                                     <field name="product_id" required="1" readonly="1"/>
+                                    <field name="line_count" readonly="1" optional="hide"/>
                                     <field name="type" readonly="1" optional="hide"/>
+                                    <field name="subtotal_kg" readonly="1" optional="hide"/>
                                     <field name="discount_percent" readonly="parent.state not in ['draft']" optional="hide"/>
                                     <field name="discount_kg" readonly="1" optional="hide"/>
                                     <field name="total_kg" readonly="1"/>
@@ -183,6 +187,7 @@
                         </page>
                     </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -205,8 +210,8 @@
                 <field name="line_count" string="Pesajes"/>
                 <field name="entry_time"/>
                 <field name="exit_time"/>
-                <field name="state" widget="badge" decoration-info="state == 'draft'" 
-                       decoration-warning="state == 'processed'" 
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-warning="state == 'processed'"
                        decoration-success="state == 'sale_created'"
                        decoration-danger="state == 'cancel'"/>
                 <field name="total_kg" sum="Total Kg"/>

@@ -9,7 +9,7 @@ Subir el sistema a una VPS con el dominio RecicladoraTitanium.com (falta el domi
 Preguntar antes de confirmar la compra (listo)
 Al eliminar pesaje se tiene que calcular el resumen (listo)
 Ocultar botones de lista resumen y pesaje para ciertos usuarios (listo)
-Ocultar subtotal del resumen (listo Recepcion y Entrega) (ocultarlo sin eliminarlo, solo haciendo el option = "hide")
+Ocultar subtotal del resumen (listo Recepcion y Entrega) (ocultarlo sin eliminarlo, solo haciendo el option = "hide") (Listo)
 Hacer que las notas de despacho coordinen las fechas con las ordenes de entrega 
 hacer notificaciones push 
 Hacer un boton para enviar una pesada de note_rec a una note_dis

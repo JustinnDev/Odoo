@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 class DispatchNote(models.Model):
     _name = 'dispatch.note'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Nota de Entrega'
     _order = 'entry_time desc, id desc'
 
@@ -65,6 +66,12 @@ class DispatchNote(models.Model):
         string='Resumen por Material'
     )
 
+    subtotal_kg = fields.Float(
+        string='SubTotal kg',
+        compute='_compute_totals',
+        store=True
+    )
+
     total_kg = fields.Float(
         string='Total Kg',
         compute='_compute_totals',
@@ -92,8 +99,8 @@ class DispatchNote(models.Model):
     )
 
     vehicle_model = fields.Char(
-    string='Modelo',
-    readonly=False
+        string='Modelo',
+        readonly=False
     )
 
     vehicle_plate = fields.Char(
@@ -123,11 +130,12 @@ class DispatchNote(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('dispatch.note') or _('Nuevo')
         return super().create(vals)
 
-    @api.depends('summary_ids.total_kg', 'summary_ids.amount')
+    @api.depends('summary_ids.total_kg', 'summary_ids.amount', 'summary_ids.subtotal_kg')
     def _compute_totals(self):
         for note in self:
             note.total_kg = sum(line.total_kg for line in note.summary_ids)
             note.total_amount = sum(line.amount for line in note.summary_ids)
+            note.subtotal_kg = sum(line.subtotal_kg for line in note.summary_ids)
 
     @api.depends('line_ids')
     def _compute_line_count(self):
@@ -140,37 +148,38 @@ class DispatchNote(models.Model):
         if not self.line_ids:
             raise UserError(_('No hay líneas de pesaje para agrupar.'))
 
-        # Guardar los precios y descuentos existentes por producto antes de eliminar
+        # Guardar los precios y descuentos existentes por producto + tipo antes de eliminar
         existing_prices = {}
         existing_discounts = {}
         for summary in self.summary_ids:
             if summary.product_id:
-                # Usar producto + tipo como clave
                 key = (summary.product_id.id, summary.type or '')
                 existing_prices[key] = summary.price_unit
                 existing_discounts[key] = summary.discount_percent
 
-        # Eliminar resúmenes existentes
-        self.summary_ids.unlink()
+        # Eliminar resúmenes existentes (sin registrar en el chatter)
+        self.summary_ids.with_context(dispatch_no_log=True).unlink()
 
         # Diccionario para acumular subtotales por producto + tipo
         group_data = {}
+
         for line in self.line_ids:
             if not line.product_id:
                 raise UserError(_('Todas las líneas de pesaje deben tener un producto asignado.'))
-            
-            # Clave compuesta por producto + tipo
+
             key = (line.product_id.id, line.type or '')
-            
+
             if key in group_data:
                 group_data[key]['subtotal_kg'] += line.net_weight
+                group_data[key]['line_count'] += 1
             else:
                 # Usar precio y descuento existentes si están disponibles
                 price = existing_prices.get(key, line.product_id.list_price or 0.0)
                 discount = existing_discounts.get(key, 0.0)
-                
+
                 group_data[key] = {
                     'product_id': line.product_id.id,
+                    'line_count': 1,
                     'type': line.type or '',
                     'subtotal_kg': line.net_weight,
                     'discount_percent': discount,
@@ -181,7 +190,7 @@ class DispatchNote(models.Model):
         summary_lines = []
         for data in group_data.values():
             summary_lines.append((0, 0, data))
-        self.write({'summary_ids': summary_lines})
+        self.with_context(dispatch_no_log=True).write({'summary_ids': summary_lines})
 
         return {
             'type': 'ir.actions.act_window',
@@ -254,7 +263,6 @@ class DispatchNote(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
-
 
     def action_set_processed(self):
         """Marca la nota como procesada y registra la hora de salida."""
