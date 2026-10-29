@@ -9,7 +9,7 @@
         y generar una orden de venta a partir de los totales.
     """,
     'author': 'Tu Empresa',
-    'depends': ['sale', 'stock'],
+    'depends': ['sale', 'stock', 'sale_stock', 'mail'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence.xml',
