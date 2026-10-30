@@ -52,6 +52,13 @@ class DispatchNote(models.Model):
         copy=False
     )
 
+    stock_picking_id = fields.Many2one(
+        'stock.picking',
+        string='Movimiento de Inventario',
+        readonly=True,
+        copy=False
+    )
+
     note = fields.Text(string='Notas internas')
 
     line_ids = fields.One2many(
@@ -201,7 +208,11 @@ class DispatchNote(models.Model):
         }
 
     def action_generate_sale_order(self):
-        """Genera una orden de venta a partir del resumen, agrupando por producto."""
+        """Genera la orden de venta desde el resumen, la confirma y valida la entrega.
+
+        Todas las fechas (orden de venta, entrega y movimientos) quedan
+        igualadas a la hora de salida (exit_time) de la nota.
+        """
         self.ensure_one()
 
         # Verificar si ya existe una orden de venta
@@ -213,12 +224,15 @@ class DispatchNote(models.Model):
         if not self.summary_ids:
             raise UserError(_('Debe generar primero el resumen por material.'))
 
+        # Fecha única para todo el proceso
+        exit_time = self.exit_time or fields.Datetime.now()
+
         # Crear la orden de venta
         so_vals = {
             'partner_id': self.partner_id.id,
             'origin': self.name,
             'client_order_ref': self.customer_ref,
-            'date_order': fields.Datetime.now(),
+            'date_order': exit_time,
         }
         sale_order = self.env['sale.order'].create(so_vals)
 
@@ -248,12 +262,50 @@ class DispatchNote(models.Model):
 
         sale_order.write({'order_line': so_lines})
 
+        # Confirmar la cotización (action_confirm)
+        sale_order.action_confirm()
+
+        # action_confirm reescribe date_order con la fecha actual: forzarla de nuevo
+        sale_order.write({'date_order': exit_time})
+
+        # Entregas generadas por la orden de venta (equivale a action_view_delivery)
+        pickings = sale_order.picking_ids.filtered(
+            lambda p: p.state not in ('done', 'cancel')
+        ).sorted('id')
+
+        last_picking = self.env['stock.picking']
+        for picking in pickings:
+            picking.scheduled_date = exit_time
+
+            # Cantidad hecha = cantidad demandada
+            for move in picking.move_ids.filtered(lambda m: m.state not in ('done', 'cancel')):
+                move.quantity = move.product_uom_qty
+                if 'picked' in move._fields:
+                    move.picked = True
+
+            # Validar la entrega (button_validate)
+            picking.button_validate()
+            if picking.state != 'done':
+                raise UserError(_(
+                    'No se pudo validar automáticamente la entrega %s. '
+                    'Revise el stock disponible o los datos del movimiento.'
+                ) % picking.name)
+
+            # Forzar fechas después de validar
+            picking.write({'date_done': exit_time})
+            picking.move_ids.write({'date': exit_time})
+            picking.move_ids.move_line_ids.write({'date': exit_time})
+            last_picking = picking
+
         # Actualizar la nota de despacho
-        self.write({
+        vals = {
             'sale_order_id': sale_order.id,
             'state': 'sale_created',
-            'exit_time': fields.Datetime.now(),
-        })
+            'exit_time': exit_time,
+        }
+        if last_picking:
+            vals['stock_picking_id'] = last_picking.id
+        self.write(vals)
 
         # Recargar la nota de despacho
         return {
