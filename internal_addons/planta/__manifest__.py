@@ -15,6 +15,7 @@
         'mail',
         'hr',
         'list_stats',
+        'dispatch_note',
     ],
     'data': [
         'security/ir.model.access.csv',

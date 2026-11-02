@@ -15,6 +15,7 @@
         'data/ir_sequence.xml',
         'views/dispatch_note_views.xml',
         'views/menu_views.xml',
+        'wizard/dispatch_line_wizard_views.xml',
     ],
     'installable': True,
     'application': True,

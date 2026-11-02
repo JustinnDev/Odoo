@@ -6,6 +6,7 @@ class DispatchNote(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Nota de Entrega'
     _order = 'entry_time desc, id desc'
+    _rec_names_search = ['name', 'customer_ref', 'vehicle_model', 'vehicle_plate', 'partner_id']
 
     name = fields.Char(
         string='Número',
@@ -148,6 +149,16 @@ class DispatchNote(models.Model):
     def _compute_line_count(self):
         for note in self:
             note.line_count = len(note.line_ids)
+
+    @api.depends('name', 'partner_id.name', 'customer_ref')
+    def _compute_display_name(self):
+        for note in self:
+            parts = [
+                note.name,
+                note.partner_id.name if note.partner_id else False,
+                note.customer_ref,
+            ]
+            note.display_name = ' - '.join([p for p in parts if p])
 
     def action_compute_summary(self):
         """Agrupa las líneas de pesaje por producto Y tipo y genera las líneas de resumen."""

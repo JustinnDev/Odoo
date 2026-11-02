@@ -6,7 +6,7 @@ class PlantaBale(models.Model):
     _name = 'planta.bale'
     _description = 'Paca'
     _order = 'start_date desc, id desc'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'dispatch.line.source.mixin']
 
     name = fields.Char(
         string='Referencia',
@@ -117,12 +117,25 @@ class PlantaBale(models.Model):
             'finish_date': False,
         })
 
-    def action_dispatch(self):
-        """Marca la paca como despachada."""
-        self.ensure_one()
+    def _prepare_dispatch_line_vals(self):
+        return {
+            'product_id': self.material_type_id.id,
+            'gross_weight': self.weight,
+            'tare_weight': 0.0,
+            'type': 'Paca',
+        }
+
+    def _check_dispatch_line_allowed(self):
         if self.state != 'available':
             raise UserError(_('Solo se puede despachar una paca disponible.'))
-        self.state = 'dispatched'
+
+    def _after_dispatch_line_created(self, line):
+        self.write({'state': 'dispatched'})
+
+    def action_dispatch(self):
+        """Abre el wizard para agregar la paca a una nota de despacho."""
+        self.ensure_one()
+        return self.action_open_dispatch_wizard()
 
     def action_cancel(self):
         """Cancela la paca."""

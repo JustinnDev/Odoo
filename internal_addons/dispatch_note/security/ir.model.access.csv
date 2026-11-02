@@ -5,3 +5,4 @@ access_dispatch_note_summary_user,dispatch.note.summary.user,model_dispatch_note
 access_dispatch_note_manager,dispatch.note.manager,model_dispatch_note,sales_team.group_sale_manager,1,1,1,1
 access_dispatch_note_line_manager,dispatch.note.line.manager,model_dispatch_note_line,sales_team.group_sale_manager,1,1,1,1
 access_dispatch_note_summary_manager,dispatch.note.summary.manager,model_dispatch_note_summary,sales_team.group_sale_manager,1,1,1,1
+access_dispatch_line_wizard_user,dispatch.line.wizard.user,model_dispatch_line_wizard,base.group_user,1,1,1,1

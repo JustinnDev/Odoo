@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dispatch_line_wizard_form" model="ir.ui.view">
+        <field name="name">dispatch.line.wizard.form</field>
+        <field name="model">dispatch.line.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Agregar a Nota de Despacho">
+                <group>
+                    <field name="res_model" invisible="1"/>
+                    <field name="res_id" invisible="1"/>
+                    <field name="note_id" options="{'no_create': True, 'no_open': True}" placeholder="Seleccione nota de despacho"/>
+                    <field name="product_id" readonly="1" force_save="1"/>
+                    <field name="type" readonly="1" force_save="1"/>
+                    <field name="gross_weight" readonly="1" force_save="1"/>
+                    <field name="tare_weight"/>
+                    <field name="net_weight" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Agregar" class="btn-primary"/>
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

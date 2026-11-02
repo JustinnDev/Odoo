@@ -1,5 +1,6 @@
 Modulo General
 
+hacer que al despachar una paca, se abra un wizard con las notas de entrega que estan en proceso y seleccionar a cual se va a despachar 
 Ver como instalar un bloqueo pesimista en Odoo
 Hacer un modulo de lista de precios y se pueda usar en reception reception_note (fase de prueba)
 
@@ -11,7 +12,7 @@ Al eliminar pesaje se tiene que calcular el resumen (listo)
 Ocultar botones de lista resumen y pesaje para ciertos usuarios (listo)
 Ocultar subtotal del resumen (listo Recepcion y Entrega) (ocultarlo sin eliminarlo, solo haciendo el option = "hide") (Listo)
 Hacer que las notas de despacho coordinen las fechas con las ordenes de entrega 
-hacer notificaciones push 
+hacer notificaciones push (haciendolo aplicacion funciona )
 Hacer un boton para enviar una pesada de note_rec a una note_dis
 añadir campo para foto de vehiculo nota de entrega/despacho 
 añadir campo para foto nota papel
