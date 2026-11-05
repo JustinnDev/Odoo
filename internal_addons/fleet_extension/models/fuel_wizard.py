@@ -55,12 +55,9 @@ class FleetExtensionFuelWizard(models.TransientModel):
 
     refuel_date = fields.Datetime(
         string='Fecha de Respostaje',
-        compute =  '_get_datetimenow',
+        default=fields.Datetime.now(),
         readonly = False
     )
-
-    def _get_datetimenow(self):
-        return fields.Datetime.now()
 
     @api.depends('quantity', 'operation_type', 'current_fuel')
     def _compute_new_fuel_level(self):
