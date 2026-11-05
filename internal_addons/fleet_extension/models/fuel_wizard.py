@@ -55,7 +55,7 @@ class FleetExtensionFuelWizard(models.TransientModel):
 
     refuel_date = fields.Datetime(
         string='Fecha de Respostaje',
-        default=fields.Datetime.now(),
+        default=fields.Datetime.now,
         readonly = False
     )
 
