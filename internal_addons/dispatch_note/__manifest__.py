@@ -16,6 +16,7 @@
         'views/dispatch_note_views.xml',
         'views/menu_views.xml',
         'wizard/dispatch_line_wizard_views.xml',
+        'report/dispatch_note_report_packing_list.xml',
     ],
     'installable': True,
     'application': True,
