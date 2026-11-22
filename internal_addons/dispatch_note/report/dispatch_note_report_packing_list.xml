@@ -3,6 +3,23 @@
 <odoo>
 
     <!-- ============================================================ -->
+    <!-- PAPERFORMAT PERSONALIZADO (SIN HEADER / SIN MARGEN SUPERIOR) -->
+    <!-- ============================================================ -->
+    <record id="paperformat_dispatch_note_packing_list" model="report.paperformat">
+        <field name="name">Packing List - Sin Header</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">8</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- ============================================================ -->
     <!-- ACCIÓN DE REPORTE                                            -->
     <!-- ============================================================ -->
     <record id="action_report_dispatch_note_packing_list" model="ir.actions.report">
@@ -14,7 +31,7 @@
         <field name="print_report_name">'Lista de Empaque - %s' % (object.name)</field>
         <field name="binding_model_id" ref="model_dispatch_note"/>
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="base.paperformat_euro"/>
+        <field name="paperformat_id" ref="paperformat_dispatch_note_packing_list"/>
     </record>
 
     <!-- ============================================================ -->
@@ -30,7 +47,7 @@
                             <img t-if="res_company.logo"
                                  t-att-src="image_data_uri(res_company.logo)"
                                  alt="Logo"
-                                 style="max-height: 3rem;"/>
+                                 style="max-height: 6rem;"/>
                         </div>
 
                         <!-- ============================================ -->
