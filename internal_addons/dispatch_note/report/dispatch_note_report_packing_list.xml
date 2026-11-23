@@ -173,35 +173,61 @@
                                     <th class="text-end" style="padding: 8px; color: #ffffff !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; background-color: #71639E !important;">Neto</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr t-foreach="doc.line_ids.sorted(lambda l: (not l.product_id.is_favorite, l.product_id.default_code or '', l.product_id.name or '', l.product_id.id))" t-as="line"
-                                    t-att-style="'background-color: ' + ('#ffffff' if line_index % 2 == 0 else '#F8F6FB') + ';'">
-                                    <td style="padding: 8px;">
-                                        <strong><span t-field="line.product_id"/></strong>
-                                    </td>
-                                    <td class="text-center" style="padding: 8px;">
-                                        <t t-if="line.type">
-                                            <span t-field="line.type"
-                                                  class="badge rounded-pill"
-                                                  style="background-color: #F1EFF7; color: #71639E; border: 1px solid #71639E; font-size: 10px; padding: 3px 8px;"/>
-                                        </t>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.gross_weight"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <span t-field="line.tare_weight"/>
-                                    </td>
-                                    <td class="text-end" style="padding: 8px;">
-                                        <strong><span t-field="line.net_weight"/></strong>
-                                    </td>
-                                </tr>
-                                <tr t-if="not doc.line_ids">
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        Sin pesajes registrados.
-                                    </td>
-                                </tr>
-                            </tbody>
+     
+<tbody>
+    <t t-set="row_idx" t-value="0"/>
+    <t t-foreach="doc.get_packing_groups()" t-as="g">
+        <!-- líneas del grupo -->
+        <tr t-foreach="g['lines']" t-as="line"
+            t-att-style="'background-color: ' + ('#ffffff' if row_idx % 2 == 0 else '#F8F6FB') + ';'">
+            <t t-set="row_idx" t-value="row_idx + 1"/>
+            <td style="padding: 8px;">
+                <strong><span t-field="line.product_id"/></strong>
+            </td>
+            <td class="text-center" style="padding: 8px;">
+                <t t-if="line.type">
+                    <span t-field="line.type"
+                          class="badge rounded-pill"
+                          style="background-color: #F1EFF7; color: #71639E; border: 1px solid #71639E; font-size: 10px; padding: 3px 8px;"/>
+                </t>
+            </td>
+            <td class="text-end" style="padding: 8px;">
+                <span t-field="line.gross_weight"/>
+            </td>
+            <td class="text-end" style="padding: 8px;">
+                <span t-field="line.tare_weight"/>
+            </td>
+            <td class="text-end" style="padding: 8px;">
+                <strong><span t-field="line.net_weight"/></strong>
+            </td>
+        </tr>
+
+        <!-- fila de subtotal del material -->
+        <tr style="background-color: #EDE9F6; border-top: 1px solid #A99CC4; border-bottom: 1px solid #A99CC4;">
+            <td colspan="2" class="text-end" style="padding: 6px 8px; font-size: 11px; color: #71639E; font-style: italic;">
+                Subtotal <strong><span t-esc="g['product'].display_name"/></strong>
+                (<span t-esc="g['count']"/> pesajes)
+            </td>
+            <td class="text-end" style="padding: 6px 8px; font-size: 12px; color: #71639E;">
+                <strong><span t-esc="'%.2f' % g['total_gross']"/></strong>
+            </td>
+            <td class="text-end" style="padding: 6px 8px; font-size: 12px; color: #71639E;">
+                <strong><span t-esc="'%.2f' % g['total_tare']"/></strong>
+            </td>
+            <td class="text-end" style="padding: 6px 8px; font-size: 12px; color: #71639E;">
+                <strong><span t-esc="'%.2f' % g['total_net']"/> kg</strong>
+            </td>
+        </tr>
+    </t>
+
+    <!-- sin líneas -->
+    <tr t-if="not doc.line_ids">
+        <td colspan="5" class="text-center text-muted py-4">
+            Sin pesajes registrados.
+        </td>
+    </tr>
+</tbody>
+     
                             <tfoot>
                                 <tr style="background-color: #F1EFF7; border-top: 2px solid #71639E;">
                                     <th colspan="2" class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">

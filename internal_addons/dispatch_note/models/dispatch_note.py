@@ -1,5 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+from itertools import groupby
+from operator import attrgetter
 
 class DispatchNote(models.Model):
     _name = 'dispatch.note'
@@ -350,3 +352,30 @@ class DispatchNote(models.Model):
     def action_cancel(self):
         self.ensure_one()
         self.write({'state': 'cancel'})
+
+
+    def get_packing_groups(self):
+        """Agrupa las líneas de pesaje por producto para la Lista de Empaque.
+        Devuelve una lista de dicts con el producto, sus líneas y los subtotales.
+        """
+        self.ensure_one()
+        lines = self.line_ids.sorted(
+            lambda l: (
+                not l.product_id.is_favorite,
+                l.product_id.default_code or '',
+                l.product_id.name or '',
+                l.product_id.id,
+            )
+        )
+        groups = []
+        for product, items in groupby(lines, key=attrgetter('product_id')):
+            items = list(items)
+            groups.append({
+                'product': product,
+                'lines': items,
+                'count': len(items),
+                'total_gross': sum(l.gross_weight or 0.0 for l in items),
+                'total_tare': sum(l.tare_weight or 0.0 for l in items),
+                'total_net': sum(l.net_weight or 0.0 for l in items),
+            })
+        return groups
