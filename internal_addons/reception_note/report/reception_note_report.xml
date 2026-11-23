@@ -14,7 +14,7 @@
         <field name="print_report_name">'Nota Recepcion - %s' % (object.name)</field>
         <field name="binding_model_id" ref="model_reception_note"/>
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="base.paperformat_euro"/>
+        <field name="paperformat_id" ref="dispatch_note.paperformat_dispatch_note_packing_list"/>
     </record>
 
     <!-- ============================================================ -->
@@ -30,7 +30,7 @@
                             <img t-if="res_company.logo"
                                  t-att-src="image_data_uri(res_company.logo)"
                                  alt="Logo"
-                                 style="max-height: 3rem;"/>
+                                 style="max-height: 6rem;"/>
                         </div>
 
                         <!-- ============================================ -->
@@ -194,14 +194,14 @@
                                     </td>
                                 </tr>
                                 <tr t-if="not doc.summary_ids">
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="9" class="text-center text-muted py-4">
                                         Sin resumen calculado.
                                     </td>
                                 </tr>
                             </tbody>
                             <tfoot>
                                 <tr style="background-color: #F1EFF7; border-top: 2px solid #71639E;">
-                                    <th colspan="5" class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">
+                                    <th colspan="6" class="text-end" style="padding: 10px; font-size: 13px; color: #71639E;">
                                         TOTAL GENERAL
                                     </th>
                                     <th class="text-end" style="padding: 10px; font-size: 14px; color: #71639E;">
